@@ -39,7 +39,7 @@ small{display:block;opacity:.75;margin:10px 0}
 <section id="setup">
 <div class="card"><h2>١) ملف الصوت</h2><input type="file" id="fa" accept="audio/*,video/*"> <span id="ina"></span></div>
 <div class="card"><h2>٢) النص</h2><input type="file" id="ft" accept=".txt,.srt,.vtt,text/plain"><textarea id="tx" placeholder="أو الصق النص هنا. أسطر الجداول تبدأ بالفاصلة العربية (،). ويُقبل ملف SRT أو VTT إن كان فيه توقيت جاهز."></textarea></div>
-<div class="card"><label><input type="checkbox" id="auto" checked> ضبط التزامن تلقائيًا من وقفات الصوت</label><br><button class="p" id="build">بناء السبورة ▶</button> <button id="sample">تجربة بالدرس الأول</button> <span id="st"></span></div>
+<div class="card"><label><input type="checkbox" id="auto" checked> ضبط التزامن تلقائيًا من وقفات الصوت</label><br><button class="p" id="build">بناء السبورة ▶</button> <button id="tap" title="يضمن تطابقًا تامًا: تضغط عند بدء كل سطر أثناء سماع الصوت">🎯 مزامنة بالنقر</button> <button id="sample">تجربة بالدرس الأول</button> <span id="st"></span></div>
 </section>
 <section id="studio" hidden>
 <div id="cvw"><canvas id="cv" width="1280" height="720"></canvas><div id="ov"><button class="p" id="go">ابدأ المشاهدة ▶</button></div></div>
@@ -114,6 +114,7 @@ function parseText(raw){
  if(/-->/.test(raw)){const out=[],bl=raw.replace(/\r/g,'').split(/\n\s*\n/);bl.forEach(b=>{const m=b.match(/(\d+:)?(\d+):(\d+)[.,](\d+)\s*-->\s*(\d+:)?(\d+):(\d+)[.,](\d+)/);if(!m)return;const T=(h,mi,s,ms)=>(+(h||'0').replace(':',''))*3600+ +mi*60+ +s+ +ms/1000,tx=b.split('\n').filter(l=>!/-->/.test(l)&&!/^\d+$/.test(l.trim())&&!/^WEBVTT/.test(l)).join(' ').trim();if(tx)out.push({t:tx,type:'para',start:T(m[1],m[2],m[3],m[4]),end:T(m[5],m[6],m[7],m[8]),cued:1})});return out.map(L=>(L.icon=autoIcon(L),L))}
  const out=[];let prevRow=0;
  raw.split(/\r?\n/).forEach(l=>{l=l.trim();if(!l)return;
+  {const mk=l.match(/^\[رسم:(\w+)\]$/);if(mk){if(out.length)out[out.length-1].ill=mk[1];return}}
   if(/^،/.test(l)){const cells=l.replace(/^[،\s]+/,'').replace(/[\s،.]+$/,'').split(/\s+،\s+/).map(s=>s.trim()).filter(Boolean);if(cells.length){out.push({type:'row',cells,t:cells.join(' ، '),first:!prevRow});prevRow=1}return}
   prevRow=0;const bu=/^[-•]\s+/.test(l);l=l.replace(/^[-•]\s+/,'').replace(/\.+$/,'').trim();if(!l)return;
   const head=/^(الوحدة|المبحث|المرحلة|تمهيد|مقدمة|بطاقة|دليل|الخريطة|نواتج|مخرجات|المفاهيم|التقويم|الإجابات|أسئلة|\d+\.\d+|[أ-هـ]\.\s)/.test(l)||(!bu&&l.length<=34);
@@ -128,7 +129,7 @@ async function analyze(buf){const ch=buf.getChannelData(0),sr=buf.sampleRate,w=M
  for(let i=0;i<n;i++){if(rms[i]>th){if(st<0)st=i;gap=0;last=i}else if(st>=0){gap++;if(gap>=16){runs.push([st*.01,(last+1)*.01]);st=-1}}}
  if(st>=0)runs.push([st*.01,(last+1)*.01]);return runs}
 function assign(runs){
- const n=LINES.length,m=runs.length,W=LINES.map(L=>L.type=='row'?L.cells.join('').length+4*L.cells.length:L.t.length+8),tot=W.reduce((a,b)=>a+b,0),pre=[0];
+ const n=LINES.length,m=runs.length,sp=t=>{let w=0;(t.match(/[A-Z]{2,}/g)||[]).forEach(a=>w+=a.length*5.5);t=t.replace(/[A-Z]{2,}/g,'');return w+(t.match(/[\u0600-\u06FF]/g)||[]).length+(t.match(/[A-Za-z]/g)||[]).length*1.2+(t.match(/[0-9\u0660-\u0669]+/g)||[]).length*6+(t.match(/[،,:؟?!؛]/g)||[]).length*3},W=LINES.map(L=>sp(L.t)+10+(L.type=='row'?4*L.cells.length:0)),tot=W.reduce((a,b)=>a+b,0),pre=[0];
  runs.forEach(x=>pre.push(pre[pre.length-1]+x[1]-x[0]));const r=pre[m]/tot;
  if(m<n){let c=0;LINES.forEach((L,i)=>{L.start=+(runs[0][0]+(DUR-runs[0][0])*c/tot).toFixed(2);L.re=null;c+=W[i]});fixEnds();return}
  const gp=runs.map((x,q)=>q?x[0]-runs[q-1][1]:1),INF=1e18,dp=Array.from({length:n+1},()=>new Float64Array(m+1).fill(INF)),bk=Array.from({length:n+1},()=>new Int16Array(m+1));dp[0][0]=0;
@@ -141,17 +142,17 @@ function wrapT(t,size,mw){cx.font=`700 ${size}px ${FF}`;const ws=t.split(/\s+/),
 const isLtr=t=>{const ar=(t.match(/[\u0600-\u06FF]/g)||[]).length,la=(t.match(/[A-Za-z]/g)||[]).length;return ar===0||la>ar};
 const mkSeg=(l,xr,base,sz)=>({s:l.s,w:l.w,pw:l.pw,xr,xl:xr-l.w,ltr:isLtr(l.s),base,sz});
 function wrapW(t,size,mw){const a=wrapT(t,size,mw);cx.font=`700 ${size}px ${FF}`;return a.map(l=>{const pw=[0];for(let k=1;k<=l.s.length;k++)pw.push(cx.measureText(l.s.slice(0,k)).width);return{s:l.s,w:pw[l.s.length],pw}})}
-function layout(){BOARDS=[];let b=null,y=0;const TOP=110,BOT=1050,nb=()=>{b={els:[]};BOARDS.push(b);y=TOP};
+function layout(){BOARDS=[];let b=null,y=0;const TOP=110,BOT=1050,nb=()=>{b={els:[]};BOARDS.push(b);y=TOP},ill=L=>{if(!L.ill||!ILL[L.ill])return;if(BOT-y<260)nb();const h=Math.min(400,BOT-y-10);b.els.push({L:{start:L.end!=null?L.end:L.start+1.5},k:'ill',y,h,id:L.ill});y+=h+10};
  for(let i=0;i<LINES.length;i++){const L=LINES[i];
   if(L.type=='row'){let j=i,rs=[];while(j<LINES.length&&LINES[j].type=='row'){rs.push(LINES[j]);j++}
    const im=rs.length>1&&rs[0].cells.length==2&&rs.slice(1).every(r=>r.cells.length==1);
    rs.forEach((r,k)=>{if(im){r._ws=[170,1390];r._c=k==0?r.cells:['',r.cells[0]];r._ic=k==0?null:autoIcon({type:'heading',t:r.cells[0]})}else{const n=r.cells.length;r._ws=n==2?[520,1040]:Array(n).fill(1560/n);r._c=r.cells;r._ic=null}});
    const hs=rs.map(r=>{const m=Math.max(...r._c.map((c,q)=>c?wrapT(c,32,r._ws[q]-24).length:1));return m>1?32*1.35*m+22:58}),tot=hs.reduce((a,c)=>a+c+5,0);
    if(!b||(tot<=BOT-TOP&&y+tot>BOT))nb();
-   rs.forEach((r,k)=>{if(y+hs[k]>BOT)nb();const segs=[];let xx=1740;r._ws.forEach((w,q)=>{xx-=w;const tx=r._c[q];if(!tx)return;const ls=wrapW(tx,32,w-24),m=ls.length;ls.forEach((l,jj)=>segs.push(mkSeg(l,xx+w/2+l.w/2,y+hs[k]/2+11-(m-1)*21.5+jj*43.2,32)))});b.els.push({L:r,k:'row',y,h:hs[k],segs});y+=hs[k]+5});i=j-1;continue}
+   rs.forEach((r,k)=>{if(y+hs[k]>BOT)nb();const segs=[];let xx=1740;r._ws.forEach((w,q)=>{xx-=w;const tx=r._c[q];if(!tx)return;const ls=wrapW(tx,32,w-24),m=ls.length;ls.forEach((l,jj)=>segs.push(mkSeg(l,xx+w/2+l.w/2,y+hs[k]/2+11-(m-1)*21.5+jj*43.2,32)))});b.els.push({L:r,k:'row',y,h:hs[k],segs});y+=hs[k]+5});ill(rs[rs.length-1]);i=j-1;continue}
   const sz=L.type=='title'?78:L.type=='heading'?60:46,ic=L.icon&&IM[L.icon],mw=L.type=='title'?1700:ic?1380:1560,ls=wrapW(L.t,sz,mw),lh=sz*1.5,h=ls.length*lh+(L.type=='heading'||L.type=='title'?30:14);
   if(!b||y+h>BOT||(L.type=='title'&&b.els.length)||(L.type=='heading'&&y>640))nb();
-  const cen=L.type=='title',xr=cen?0:ic?1640:1800;b.els.push({L,k:'t',y,h,sz,lh,ls,cen,xr,ic,segs:ls.map((l,jj)=>mkSeg(l,cen?960+l.w/2:xr,y+sz*1.1+jj*lh,sz))});y+=h+10}}
+  const cen=L.type=='title',xr=cen?0:ic?1640:1800;b.els.push({L,k:'t',y,h,sz,lh,ls,cen,xr,ic,segs:ls.map((l,jj)=>mkSeg(l,cen?960+l.w/2:xr,y+sz*1.1+jj*lh,sz))});y+=h+10;ill(L)}}
 // ===== الرسم =====
 const PI={};function pinfo(d){if(!PI[d]){const e=document.createElementNS(NS,'path');e.setAttribute('d',d);PI[d]={p:new Path2D(d),e,L:e.getTotalLength()}}return PI[d]}
 function dp(d,x,y,s,p,col,lw,fill){if(p<=0)return null;const I=pinfo(d);cx.save();cx.translate(x,y);cx.scale(s,s);if(fill&&p>.7){cx.globalAlpha=(p-.7)/.3;cx.fillStyle=fill;cx.fill(I.p);cx.globalAlpha=1}cx.setLineDash([I.L*p,I.L+30]);cx.lineWidth=lw/s;cx.strokeStyle=col;cx.lineCap='round';cx.lineJoin='round';cx.stroke(I.p);cx.restore();const q=I.e.getPointAtLength(I.L*Math.min(p,.999));return{x:x+q.x*s,y:y+q.y*s}}
@@ -201,7 +202,7 @@ function edit(){$('ed').innerHTML='<table>'+LINES.map((L,i)=>`<tr><td>${i+1}</td
  document.querySelectorAll('#ed .s').forEach(x=>x.onchange=()=>{LINES[+x.dataset.i].start=+x.value;LINES[+x.dataset.i].rs=null;LINES.sort((a,b)=>a.start-b.start);fixEnds();layout();ui2()});
  document.querySelectorAll('#ed .ic').forEach(x=>x.onchange=()=>{const L=LINES[+x.dataset.i];L.noic=x.value=='-';L.man=!!x.value&&x.value!='-';L.icon=x.value==''?autoIcon(L):x.value=='-'?null:x.value;layout();ui2()})}
 function ui2(){$('ch').innerHTML='';BOARDS.forEach((b,i)=>{const x=document.createElement('button');x.textContent='لوحة '+(i+1);x.onclick=()=>{au.currentTime=Math.max(0,b.els[0].L.start)};$('ch').append(x)})}
-async function build(){await fontsReady;const raw=$('tx').value;if(!BLOB||!raw.trim()){status('ارفع الصوت واكتب النص أولًا');return}if(GATE&&!G.ok&&!G.trainer){status('سجّل دخولك أولًا');return}if(GATE&&!G.trainer&&G.left<=0){renderGate();status('انتهت محاولاتك. اطلب التجديد من المدرب.');return}
+async function build(){await fontsReady;const raw=$('tx').value;if(!BLOB||!raw.trim()){status('ارفع الصوت واكتب النص أولًا');return}if(GATE&&!G.ok&&!G.trainer){status('سجّل دخولك أولًا');return}if(GATE&&!G.trainer&&G.left<=0){renderGate();status('انتهت محاولاتك. اطلب التجديد من مدير النظام.');return}
  status('جارٍ تحليل الصوت…');LINES=parseText(raw);const buf=await ACTX.decodeAudioData(await BLOB.arrayBuffer());if(!(await consume())){status($('st').textContent||'');return}au._stop();au.buf=buf;au.off=0;DUR=buf.duration;
  if(LINES.every(L=>L.cued))fixEnds();else{const runs=await analyze(buf);if($('auto').checked&&runs.length>1)assign(runs);else{const T=DUR/LINES.length;LINES.forEach((L,i)=>L.start=+(i*T).toFixed(2));fixEnds()}}
  layout();ui();status('تم: '+LINES.length+' سطرًا في '+BOARDS.length+' لوحة. اضغط ابدأ.')}
@@ -212,6 +213,34 @@ $('sample').onclick=()=>{$('tx').value=SAMPLE_TXT;BLOB=b64blob(SAMPLE_AUDIO,'aud
 const tog=()=>{$('ov').hidden=true;au.paused?au.play():au.pause()};$('go').onclick=tog;$('pp').onclick=tog;$('rg').oninput=e=>{au.currentTime=+e.target.value};
 $('off').onchange=e=>OFF=+e.target.value;
 $('fs').onclick=()=>{const s=$('cvw');document.fullscreenElement?document.exitFullscreen():s.requestFullscreen&&s.requestFullscreen()};
+
+
+// ===== مزامنة بالنقر: تطابق مضمون بين النص والصوت =====
+let TAP=null;
+$('tap').onclick=()=>{if(!LINES.length){status('ابنِ السبورة أولًا ثم اضغط مزامنة بالنقر');return}TAP={i:0,t:[]};au.currentTime=0;au.play();$('ov').hidden=true;tapShow()};
+function tapShow(){let d=$('tapd');if(!TAP){if(d)d.remove();return}
+ if(!d){d=document.createElement('div');d.id='tapd';d.style.cssText='position:fixed;left:0;right:0;bottom:0;z-index:99;background:#14201a;color:#fff;padding:14px;text-align:center;font-size:24px;border-top:3px solid #6fcf97';document.body.append(d)}
+ d.innerHTML='<div style="opacity:.75;font-size:15px">اضغط <b>مسافة</b> أو الزر لحظة يبدأ المتحدث بنطق السطر · Backspace تراجع · Esc إلغاء ('+(TAP.i+1)+'/'+LINES.length+')</div><div style="margin:8px 0">'+LINES[TAP.i].t+'</div><button id="tapn" style="font-size:20px;padding:8px 28px">التالي ⏎</button>';$('tapn').onclick=tapNext}
+function tapNext(){if(!TAP)return;TAP.t[TAP.i]=+au.currentTime.toFixed(2);TAP.i++;
+ if(TAP.i>=LINES.length){LINES.forEach((L,i)=>{L.start=TAP.t[i];L.re=null});TAP=null;au.pause();fixEnds();layout();ui();tapShow();status('تمت المزامنة بالنقر. اضغط ابدأ للمعاينة، ويمكنك ضبط أي سطر من الجدول.');return}tapShow()}
+addEventListener('keydown',e=>{if(!TAP)return;if(e.code==='Space'||e.key==='Enter'){e.preventDefault();tapNext()}else if(e.key==='Backspace'){e.preventDefault();TAP.i=Math.max(0,TAP.i-1);tapShow()}else if(e.key==='Escape'){TAP=null;au.pause();tapShow()}});
+
+// ===== رسوم توضيحية عالية الجودة: سطر [رسم:اسم] بعد أي سطر في النص =====
+const sv=b=>'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 400" font-family="Tahoma,Arial,sans-serif" direction="rtl"><defs>'+[['g','#35a07a','#1d5c45'],['a','#f6bd45','#d98a1b'],['r','#ec6c63','#b93a34'],['b','#4a89da','#27508f'],['n','#1d3552','#0e1a2a']].map(([i,a,c])=>`<linearGradient id="${i}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${c}"/></linearGradient>`).join('')+'<filter id="s" x="-10%" y="-10%" width="120%" height="135%"><feDropShadow dx="0" dy="7" stdDeviation="7" flood-opacity=".28"/></filter><marker id="m" markerWidth="12" markerHeight="12" refX="9" refY="6" orient="auto"><path d="M1 1L10 6L1 11z" fill="#5a4a2a"/></marker></defs>'+b+'</svg>';
+const cd=(x,y,w,h,g,t,u,f=40)=>`<g filter="url(#s)"><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="28" fill="url(#${g})"/></g><text x="${x+w/2}" y="${y+h/2+(u?-4:f/3)}" text-anchor="middle" fill="#fff" font-size="${f}" font-weight="700">${t}</text>`+(u?`<text x="${x+w/2}" y="${y+h/2+38}" text-anchor="middle" fill="#fff" font-size="26" opacity=".93">${u}</text>`:'');
+const ar=(a,b,c,d)=>`<path d="M${a} ${b}L${c} ${d}" stroke="#5a4a2a" stroke-width="6" stroke-linecap="round" marker-end="url(#m)"/>`;
+const ST=['اقرأ','فسّر','قرّر','كلّف','تابع'],SG=['b','g','a','r','n'],SY=['ECHCS','CQIS','AIMS','CAMS','ISSS','EDC-PEMS'];
+const ILL={
+chi:sv(cd(1060,20,400,110,'b','AQI','معلومات ومحتوى المقرر',44)+cd(1060,145,400,110,'g','DPI','المواد الصوتية والمرئية وأداء الأستاذ',44)+cd(1060,270,400,110,'a','API','الأداء الأكاديمي الطلابي',44)+ar(1040,75,660,185)+ar(1040,200,660,200)+ar(1040,325,660,215)+cd(100,100,540,200,'n','CHI','صحة المقرر الاستراتيجية',70)+'<text x="370" y="350" text-anchor="middle" font-size="30" fill="#8a2f2a" font-weight="700">لا تعالج CHI مباشرة — ابدأ بالرافد الأضعف</text>'),
+echcs:sv(cd(1010,40,440,320,'g','سليم','متابعة دورية',56)+cd(530,40,440,320,'a','يحتاج تحسين','خطة تحسين بموعد',56)+cd(50,40,440,320,'r','حرج','قرار فوري',56)),
+loop:sv(ST.map((t,i)=>{const x=1200-i*290;return cd(x,130,250,140,SG[i],t,'',52)+`<circle cx="${x+215}" cy="148" r="25" fill="#fff" stroke="#5a4a2a" stroke-width="4"/><text x="${x+215}" y="157" text-anchor="middle" font-size="27" font-weight="700" fill="#5a4a2a">${i+1}</text>`+(i<4?ar(x-6,200,x-38,200):'')}).join('')+'<text x="750" y="340" text-anchor="middle" font-size="36" fill="#5a4a2a" font-weight="700">ماذا؟ ومن المسؤول؟ ومتى؟</text>'),
+bar:sv('<g filter="url(#s)"><rect x="40" y="30" width="1420" height="340" rx="30" fill="#fff" stroke="#c9b98a" stroke-width="4"/></g><rect x="40" y="30" width="1420" height="76" rx="30" fill="url(#n)"/><rect x="40" y="70" width="1420" height="36" fill="url(#n)"/><text x="1420" y="82" text-anchor="end" fill="#fff" font-size="34" font-weight="700">البوابة الموحدة لأنظمة مركز تطوير التعليم</text>'+SY.map((t,i)=>cd(1040-(i%3)*430+190-190,140+Math.floor(i/3)*110,400,90,['g','b','a','r','b','g'][i],t,'',38)).join(''))
+};
+const ILI={};Object.keys(ILL).forEach(k=>{const i=new Image();i.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(ILL[k]);ILI[k]=i});
+function drawIll(e,t){const im=ILI[e.id];if(!im||!im.complete||!im.naturalWidth)return null;const p=Math.max(0,Math.min(1,(t-(e.L.start+.4))/1.1));if(p<=0)return null;
+ const sc=Math.min(e.h/im.naturalHeight,1500/im.naturalWidth),w=im.naturalWidth*sc,h=im.naturalHeight*sc,x=(1920-w)/2,y=e.y+(e.h-h)/2;
+ cx.save();cx.globalAlpha=Math.min(1,p*1.6);cx.beginPath();cx.rect(x+w*(1-p),y-10,w*p+2,h+20);cx.clip();cx.drawImage(im,x,y,w,h);cx.restore();return null}
+const _drawEl=drawEl;drawEl=function(e,t){return e.k==='ill'?drawIll(e,t):_drawEl(e,t)};
 
 // ===== بوابة المتدربين: دخول بالرمز + 3 محاولات يجددها المدرب (تستخدم عدّاد المحاولات الموجود في الحقيبة) =====
 const GATE={"url": "https://script.google.com/macros/s/AKfycbwZuHr0vRCxNURQQvzDe8VBFJcuJWZ12urQw6wscrAmBJeFWXNsUIZ6SgpZ1ekmXffA/exec"},GMAX=3,G={tok:'',left:null,ok:!GATE,trainer:false,pin:''};
