@@ -129,7 +129,7 @@ async function analyze(buf){const ch=buf.getChannelData(0),sr=buf.sampleRate,w=M
  for(let i=0;i<n;i++){if(rms[i]>th){if(st<0)st=i;gap=0;last=i}else if(st>=0){gap++;if(gap>=16){runs.push([st*.01,(last+1)*.01]);st=-1}}}
  if(st>=0)runs.push([st*.01,(last+1)*.01]);return runs}
 function assign(runs){
- const n=LINES.length,m=runs.length,sp=t=>{let w=0;(t.match(/[A-Z]{2,}/g)||[]).forEach(a=>w+=a.length*5.5);t=t.replace(/[A-Z]{2,}/g,'');return w+(t.match(/[\u0600-\u06FF]/g)||[]).length+(t.match(/[A-Za-z]/g)||[]).length*1.2+(t.match(/[0-9\u0660-\u0669]+/g)||[]).length*6+(t.match(/[،,:؟?!؛]/g)||[]).length*3},W=LINES.map(L=>sp(L.t)+10+(L.type=='row'?4*L.cells.length:0)),tot=W.reduce((a,b)=>a+b,0),pre=[0];
+ const n=LINES.length,m=runs.length,W=LINES.map(L=>L.type=='row'?L.cells.join('').length+4*L.cells.length:L.t.length+8),tot=W.reduce((a,b)=>a+b,0),pre=[0];
  runs.forEach(x=>pre.push(pre[pre.length-1]+x[1]-x[0]));const r=pre[m]/tot;
  if(m<n){let c=0;LINES.forEach((L,i)=>{L.start=+(runs[0][0]+(DUR-runs[0][0])*c/tot).toFixed(2);L.re=null;c+=W[i]});fixEnds();return}
  const gp=runs.map((x,q)=>q?x[0]-runs[q-1][1]:1),INF=1e18,dp=Array.from({length:n+1},()=>new Float64Array(m+1).fill(INF)),bk=Array.from({length:n+1},()=>new Int16Array(m+1));dp[0][0]=0;
@@ -189,7 +189,7 @@ function draw(){if(!BOARDS.length)return;const t=au.currentTime-OFF;cx.setTransf
  if(bi>0&&dt<.55){const ed=1920*(1-dt/.55);drawBoard(BOARDS[bi-1],1e9,[0,ed]);pen=drawBoard(b,t,[ed,1920])}else pen=drawBoard(b,t,null);
  if(pen){PEN.tx=pen.x;PEN.ty=pen.y;PEN.live=pen.live}
  const d=Math.hypot(PEN.tx-PEN.x,PEN.ty-PEN.y);if(PEN.live&&d<700){PEN.x=PEN.tx;PEN.y=PEN.ty}else{PEN.x+=(PEN.tx-PEN.x)*.3;PEN.y+=(PEN.ty-PEN.y)*.3}
- if(HAND.complete&&HAND.naturalWidth){cx.save();cx.translate(PEN.x,PEN.y);cx.rotate(PEN.live?Math.sin(au.currentTime*7)*.03:0);cx.drawImage(HAND,-87.8,-28.9,260,145.6);cx.restore()}
+ if(HAND.complete&&HAND.naturalWidth){cx.save();cx.translate(PEN.x,PEN.y);cx.rotate(PEN.live?Math.sin(au.currentTime*7)*.03:0);cx.scale(-1,1);cx.drawImage(HAND,-87.8,-28.9,260,145.6);cx.restore()}
  const T=au.currentTime;$('rg').value=T;$('tm').textContent=Math.floor(T/60)+':'+String(Math.floor(T%60)).padStart(2,'0');$('pp').textContent=au.paused?'▶':'⏸';
  [...$('ch').children].forEach((x,i)=>x.classList.toggle('on',i==bi))}
 (function loop(){try{draw()}catch(e){console.error(e)}requestAnimationFrame(loop)})();
@@ -214,6 +214,17 @@ const tog=()=>{$('ov').hidden=true;au.paused?au.play():au.pause()};$('go').oncli
 $('off').onchange=e=>OFF=+e.target.value;
 $('fs').onclick=()=>{const s=$('cvw');document.fullscreenElement?document.exitFullscreen():s.requestFullscreen&&s.requestFullscreen()};
 
+
+// ===== نص مؤقَّت: سطر يبدأ بـ @بداية-نهاية (بالثواني) يُربط بلحظة نطقه بالضبط =====
+const _pt=parseText;
+parseText=function(raw){if(/-->/.test(raw)||!/^@\d/m.test(raw))return _pt(raw);
+ const out=[];raw.split(/\r?\n/).forEach(l=>{l=l.trim();if(!l)return;
+  const mk=l.match(/^\[رسم:(\w+)\]$/);if(mk){if(out.length)out[out.length-1].ill=mk[1];return}
+  const m=l.match(/^@(\d+(?:\.\d+)?)-(\d+(?:\.\d+)?)\s+(.*)$/);
+  if(!m){_pt(l).forEach(x=>out.push(x));return}
+  const r=_pt(m[3]);if(!r.length)return;const st=+m[1],en=Math.max(+m[2],st+.4),tot=r.reduce((a,x)=>a+(x.t||'').length,0)||1;let c=st;
+  r.forEach(x=>{const d=(en-st)*((x.t||'').length||1)/tot;x.start=c;x.end=Math.max(c+.2,c+d-.05);x.cued=1;c+=d;out.push(x)})});
+ return out};
 
 // ===== مزامنة بالنقر: تطابق مضمون بين النص والصوت =====
 let TAP=null;
