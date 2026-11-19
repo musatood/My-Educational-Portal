@@ -67,7 +67,7 @@ table.t{border-collapse:collapse;width:100%;font-size:.88rem}table.t th,table.t 
 <body>
 <div id="authgate"><div class="card"><div style="text-align:center;margin-bottom:12px"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIj48Y2lyY2xlIGN4PSIxMDAiIGN5PSIxMDAiIHI9Ijk2IiBmaWxsPSIjMEYyQTQ3Ii8+PGNpcmNsZSBjeD0iMTAwIiBjeT0iMTAwIiByPSI4NCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjQzI4QTFFIiBzdHJva2Utd2lkdGg9IjQiLz48cGF0aCBkPSJNNTIgMTE4aDk2djhINTJ6TTYwIDg2bDQwLTIyIDQwIDIydjEwSDYweiIgZmlsbD0iI0MyOEExRSIvPjxyZWN0IHg9IjcyIiB5PSI5OCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjZmZmIi8+PHJlY3QgeD0iOTUiIHk9Ijk4IiB3aWR0aD0iMTAiIGhlaWdodD0iMjAiIGZpbGw9IiNmZmYiLz48cmVjdCB4PSIxMTgiIHk9Ijk4IiB3aWR0aD0iMTAiIGhlaWdodD0iMjAiIGZpbGw9IiNmZmYiLz48dGV4dCB4PSIxMDAiIHk9IjE1OCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXdlaWdodD0iNzAwIiBmb250LXNpemU9IjMwIiBmaWxsPSIjZmZmIj5PVVM8L3RleHQ+PC9zdmc+" alt="شعار جامعة السودان المفتوحة" style="width:130px;height:130px;border-radius:50%;background:#fff;padding:4px;box-shadow:0 2px 12px rgba(0,0,0,.35)"><div id="ag_cohort" style="margin-top:8px;font-weight:700;color:var(--ac)">جامعة السودان المفتوحة<br>مركز تطوير التعليم</div></div><h2>🔐 الدخول إلى الحقيبة التدريبية</h2>
 <div style="display:flex;gap:8px;margin-bottom:12px"><button class="b" id="ag_t1" onclick="agTab(1)">👤 دخول متدرب</button><button class="b s" id="ag_t2" onclick="agTab(2)">🎓 دخول مدرب</button></div>
-<div id="ag_trainee"><div id="ag_step1"><label>رقم الواتساب مع رمز الدولة (مثال: 249912345678)</label><input type="tel" id="ag_ph" inputmode="tel" dir="ltr"><button class="b" onclick="agRequest()">طلب رمز التحقق</button><p class="note">يصلك الرمز على واتساب من المدرب بعد تأكيد رقمك المسجّل.</p></div>
+<div id="ag_trainee"><div id="ag_resume" style="display:none;margin-bottom:14px"><button class="b" id="ag_resume_btn" onclick="agResume()" style="width:100%"></button><p class="note" style="margin-top:6px">دون رمز جديد، ما دام حسابك مسجلاً. <a href="#" onclick="agForget();return false">لست أنت / جهاز مشترك؟ احذف الحساب من هذا الجهاز</a></p></div><div id="ag_step1"><label>رقم الواتساب مع رمز الدولة (مثال: 249912345678)</label><input type="tel" id="ag_ph" inputmode="tel" dir="ltr"><button class="b" onclick="agRequest()">طلب رمز التحقق</button><p class="note">يصلك الرمز على واتساب من المدرب بعد تأكيد رقمك المسجّل.</p></div>
 <div id="ag_step2"><p class="note">أدخل الرمز المكوّن من 6 أرقام الذي وصلك على واتساب (صالح 15 دقيقة).</p><input type="text" id="ag_code" inputmode="numeric" maxlength="6" dir="ltr" placeholder="------"><button class="b" onclick="agVerify()">تحقق ودخول</button> <button class="b s" onclick="agBack()">تغيير الرقم</button></div></div>
 <div id="ag_trainer" style="display:none"><label>رمز المدرب</label><input type="password" id="ag_pin" dir="ltr"><button class="b" onclick="agTrainer()">دخول المدرب</button></div>
 <div id="ag_msg" class="fb"></div></div></div>
@@ -782,16 +782,39 @@ async function agVerify(){const code=agDigits($('ag_code').value);if(code.length
   try{const j=await api({action:'auth_verify',ph:AG.p,code:code});if(!j.ok){agMsg(j.err||'الرمز غير صحيح');return}
     AG.t=j.tok;AG.p=j.ph;AG.n=j.name;localStorage.setItem('odl_tok',AG.t);localStorage.setItem('odl_ph',AG.p);localStorage.setItem('odl_nm',AG.n);
     agShow(false);agApply()}catch(e){agMsg('تعذّر الاتصال بالخادم.')}}
-function agLogout(){['odl_tok','odl_ph','odl_nm'].forEach(k=>localStorage.removeItem(k));location.reload()}
+function agLogout(){try{['tok','ph','nm'].forEach(k=>{const v=localStorage.getItem('odl_'+k);if(v!==null)localStorage.setItem('odlsv_'+k,v);localStorage.removeItem('odl_'+k)})}catch(e){}location.reload()}
+/* حساب محفوظ بعد الخروج: يُظهر زر «متابعة باسمك» دون رمز جديد */
+function agSavedShow(){try{const t=localStorage.getItem('odlsv_tok');if(!t)return;const n=localStorage.getItem('odlsv_nm')||localStorage.getItem('odlsv_ph')||'';$('ag_resume').style.display='block';$('ag_resume_btn').textContent='▶ متابعة باسم '+n}catch(e){}}
+function agForget(){['tok','ph','nm'].forEach(k=>{try{localStorage.removeItem('odlsv_'+k)}catch(e){}});$('ag_resume').style.display='none'}
+async function agResume(){const t=localStorage.getItem('odlsv_tok');if(!t){agForget();return}
+  agMsg('⏳ جارٍ التحقق من حسابك...',true);
+  const j=await (async()=>{for(let k=0;k<2;k++){try{return await api({action:'auth_check',tok:t})}catch(e){await new Promise(r=>setTimeout(r,1200))}}return 'net'})();
+  if(j==='net'){agMsg('تعذّر الاتصال بالخادم. تحقق من الإنترنت وأعد المحاولة.');return}
+  if(j&&j.ok){['tok','ph','nm'].forEach(k=>{const v=localStorage.getItem('odlsv_'+k);if(v!==null)localStorage.setItem('odl_'+k,v)});agForget();location.reload();return}
+  agForget();agMsg('انتهت صلاحية جلستك أو لم يعد حسابك مسجلاً. اطلب رمز تحقق جديداً.')}
 async function agInit(){let _s=null;try{_s=await api({action:'sys_status'});if(_s&&_s.ok)applyBrand(_s.brand)}catch(e){}
   if(location.hash==='#admin'){agShow(false);return}
   if(_s&&_s.ok&&_s.on===false){agPaused(_s.msg);return}
-  if(!AG.t){agShow(true);return}
-  agShow(false);
-  try{const j=await api({action:'auth_check',tok:AG.t});
-    if(j.ok){AG.p=j.ph;AG.n=j.name;agApply();return}
-    if(j.err==='paused')return;   /* المنصة موقوفة: نُبقي جلسة المتدرب سليمة */
-    ['odl_tok','odl_ph','odl_nm'].forEach(k=>localStorage.removeItem(k));AG.t='';agShow(true)}catch(e){agApply()}}
+  if(!AG.t){agShow(true);agSavedShow();return}
+  /* البوابة تبقى مغلقة حتى يؤكد الخادم أن الجلسة سليمة (لا يُفتح شيء قبل التحقق) */
+  const j=await agCheck();
+  if(j==='net'){agShow(true);agMsg('تعذّر الاتصال بالخادم للتحقق من حسابك. تحقق من الإنترنت ثم أعد تحميل الصفحة.');return}
+  if(j==='paused')return;
+  if(j&&j.ok){AG.p=j.ph;AG.n=j.name;agShow(false);agApply();agGuardStart();return}
+  agKick()}
+/* فحص الجلسة: يعيد الرد، أو 'paused'، أو 'net' عند تعذر الاتصال (بعد محاولتين) */
+async function agCheck(){for(let k=0;k<2;k++){try{const j=await api({action:'auth_check',tok:AG.t});if(j&&j.err==='paused')return 'paused';return j}catch(e){await new Promise(r=>setTimeout(r,1200))}}return 'net'}
+/* طرد نهائي: مسح الجلسة المحفوظة وإظهار شاشة الدخول (يُستدعى حين يرفض الخادم الرمز، كأن حُذف المتدرب) */
+let _kicked=false;
+function agKick(){if(_kicked)return;_kicked=true;
+  ['odl_tok','odl_ph','odl_nm','odlsv_tok','odlsv_ph','odlsv_nm'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});
+  AG.t='';AG.p='';AG.n='';location.reload()}
+/* مراقبة دائمة: كل دقيقتين وعند العودة إلى الصفحة، وكل رد من الخادم يقول إن الجلسة غير صالحة يطرد المتدرب */
+function agGuardStart(){
+  const chk=async()=>{if(!AG.t||document.hidden||TP)return;const j=await agCheck();if(j&&j!=='net'&&j!=='paused'&&j.ok===false)agKick()};
+  setInterval(chk,120000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})}
+(function(){const _b=api;api=async function(q){const j=await _b(q);
+  if(j&&(j.code==='SESSION_INVALID'||j.err==='unauth')&&AG.t&&!(q&&q.pin!==undefined))agKick();return j}})();
 /* لوحة المدرب */
 function anErr(j){return !j?'تعذّر الاتصال':j.err==='apin'?'رمز مدير النظام غير صحيح'+(j.left!=null?' (المحاولات المتبقية '+j.left+')':''):j.err==='admin_not_set'?'لم يُضبط رمز مدير النظام في Code.gs (ADMIN_PIN)':j.err==='locked'?'الرمز مقفل مؤقتاً، انتظر '+(j.wait||'')+' دقيقة':j.err==='pin'?'رمز المدرب غير صحيح':j.err==='short'?'الاسم قصير جداً':j.err||'تعذّر التنفيذ'}
 async function anLoad(){const m=$('an_msg'),box=$('an_list');m.style.color='';m.textContent='⏳ جارٍ التحميل...';
