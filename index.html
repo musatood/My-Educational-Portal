@@ -82,7 +82,7 @@ table.t{border-collapse:collapse;width:100%;font-size:.88rem}table.t th,table.t 
 <button data-t="exam">📝 الاختبار</button>
 <button data-t="project">🛠️ المشروع</button>
 <button data-t="myfb">📈 تغذيتي الراجعة<span id="mfdot" style="display:none;width:9px;height:9px;border-radius:50%;background:#ff5252;margin-right:6px;vertical-align:middle"></span></button>
-<button data-t="agents">🤖 الوكلاء</button> <button data-t="trainer">🎓 لوحة المدرب</button>
+<button data-t="agents">🤖 الوكلاء</button> <button data-t="survey">📋 الاستبيان</button> <button data-t="trainer">🎓 لوحة المدرب</button>
 </nav>
 </header>
 <div id="nbar" style="display:none;background:var(--ac);color:#fff;padding:10px 16px;text-align:center;font-weight:700"></div>
@@ -149,6 +149,10 @@ table.t{border-collapse:collapse;width:100%;font-size:.88rem}table.t th,table.t 
 <div id="board" class="tab" style="display:none">
 <div class="card"><h2>🎞️ السبورة البيضاء</h2>
 <p class="note">اختر الدرس ثم اضغط «ابدأ المشاهدة». يُكتب الشرح باليد مع الصوت، ويمكنك التنقل بين اللوحات من الأزرار أسفل الشاشة.</p>
+<div id="wbm_card" style="padding:12px 14px;border:1px solid var(--bd);border-radius:12px;margin:10px 0;background:var(--pr2)"><b>🎞️ استوديو السبورة البيضاء: اصنع سبورتك بنفسك</b>
+<div class="note" style="margin:4px 0">اشرح مشروعك أو أي فكرة من الحقيبة: سجّل صوتك واكتب نص الشرح، ثم ارفعهما في الاستوديو فتُبنى سبورة مكتوبة بالتزامن مع صوتك، وتنزّلها ملفاً. لك <b>3 محاولات بناء في اليوم</b> تتجدد تلقائياً غداً، أما التعديل اليدوي والتصدير فمجانيان.</div>
+<p class="note" id="wbm_left" style="font-weight:800;margin:4px 0"></p>
+<a class="b" href="studio.html" target="_blank" rel="noopener" style="display:inline-block;text-decoration:none">فتح استوديو السبورة ↗</a></div>
 <div class="tools" id="bd_list"></div>
 <div id="bd_frame"></div></div></div>
 <div id="review" class="tab" style="display:none">
@@ -192,6 +196,38 @@ table.t{border-collapse:collapse;width:100%;font-size:.88rem}table.t th,table.t 
 </div>
 </div>
 
+<style>
+#survey .svh{background:linear-gradient(135deg,var(--pr),#0a3d2e);color:#fff;border-radius:14px;padding:16px 18px;margin-bottom:12px}
+#survey .svh h2{margin:0 0 4px;font-size:1.15rem;color:#fff}#survey .svh p{margin:0;opacity:.9;font-size:.92rem}
+#survey .svbar{position:sticky;top:0;z-index:4;background:var(--bg);padding:6px 0}
+#survey .svbar .m{display:flex;justify-content:space-between;font-size:.85rem;color:var(--mu)}
+#survey .svtrk{height:7px;border-radius:7px;background:var(--trk);overflow:hidden;margin-top:4px}#survey .svtrk i{display:block;height:100%;width:0;background:var(--pr);transition:width .25s}
+#survey .svc h3{margin:0 0 4px;color:var(--pr);font-size:1.05rem}#survey .sub{color:var(--mu);font-size:.9rem;margin:0 0 8px}
+#survey .it{padding:11px 0;border-top:1px solid var(--bd)}#survey .it.miss{outline:2px solid var(--no);outline-offset:3px;border-radius:10px}
+#survey .q{margin:0 0 7px;font-weight:600}#survey .q .n{display:inline-block;min-width:1.7em;color:var(--pr);font-weight:800}
+#survey .lg{font-size:.82rem;color:var(--mu);margin:0 0 6px}
+#survey .sc{display:flex;gap:6px}#survey .sc label{flex:1;cursor:pointer}
+#survey input[type=radio],#survey input[type=checkbox]{position:absolute;opacity:0;pointer-events:none}
+#survey .sc span{display:block;text-align:center;border:1px solid var(--bd);border-radius:10px;padding:7px 0;background:var(--bg);font-weight:800}
+#survey .sc input:checked+span,#survey .pl input:checked+span{background:var(--pr);color:#fff;border-color:var(--pr)}
+#survey .pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}#survey .pair .cap{font-size:.8rem;color:var(--mu);margin:0 0 3px}
+@media(max-width:560px){#survey .pair{grid-template-columns:1fr}}
+#survey .pl{display:flex;flex-wrap:wrap;gap:8px}#survey .pl label{cursor:pointer}
+#survey .pl span{display:inline-block;border:1px solid var(--bd);background:var(--bg);border-radius:999px;padding:5px 14px;font-size:.95rem}
+#survey textarea,#survey input[type=text]{width:100%;font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:12px;padding:10px 12px;box-sizing:border-box}
+#sv_res table{border-collapse:collapse;width:100%;font-size:.88rem;margin:6px 0}#sv_res th,#sv_res td{border:1px solid var(--bd);padding:4px 7px;text-align:center}#sv_res td.t{text-align:right}#sv_res th{background:var(--pr2)}
+</style>
+<!-- استبيان تقويم الحقيبة -->
+<div id="survey" class="tab" style="display:none">
+<div class="svh"><h2>📋 استبيان تقويم حقيبة «استمرارية التدريس الجامعي في الأزمات»</h2><p>رأيك يطوّر الحقيبة. الاستبيان مجهول المصدر، ويستغرق نحو 12 إلى 15 دقيقة.</p></div>
+<div id="sv_done" class="card" style="display:none;text-align:center"><div style="font-size:2.2rem">✅</div><h2>شكراً لك، وصلت إجاباتك</h2><p class="note" id="sv_donetxt"></p></div>
+<div id="sv_app">
+<div class="svbar"><div class="m"><span id="sv_cnt">0 / 0</span><span>تُحفظ إجاباتك تلقائياً على جهازك</span></div><div class="svtrk"><i id="sv_bar"></i></div></div>
+<p class="note">الاستبيان <b>بلا اسم</b>: تُحفظ إجاباتك دون رقمك أو اسمك، ويُسجَّل فقط أنك أجبت لمنع التكرار. تُعرض النتائج مجمّعة، ولا توجد إجابة صحيحة أو خاطئة.</p>
+<form id="sv_form" novalidate autocomplete="off"></form>
+<div style="margin:12px 0"><button type="button" class="b" id="sv_send">إرسال الإجابات</button> <button type="button" class="b s" id="sv_clear">مسح الإجابات</button> <span id="sv_msg" class="fb"></span></div>
+</div></div>
+
 <!-- تغذيتي الراجعة (للمتدرب) -->
 <div id="myfb" class="tab" style="display:none"><div id="mfbody"><div class="card"><p class="note">افتح هذا التبويب لتجد نتائجك وتقييم المدرب في مكان واحد.</p></div></div></div>
 
@@ -208,6 +244,9 @@ table.t{border-collapse:collapse;width:100%;font-size:.88rem}table.t th,table.t 
 <div style="padding:10px;border:1px solid var(--bd);border-radius:12px;margin:8px 0"><b>🎞️ استوديو السبورة البيضاء</b>
 <div class="note" style="margin:4px 0">لإنشاء درس جديد: ارفع ملف الصوت وملف النص، فتُبنى السبورة وتُضبط مع الصوت، ثم نزّل الملف وارفعه إلى المستودع.</div>
 <a class="b" href="studio.html" target="_blank" rel="noopener" style="display:inline-block;text-decoration:none">فتح الاستوديو ↗</a></div>
+<div style="padding:10px;border:1px solid var(--bd);border-radius:12px;margin:8px 0"><b>📋 نتائج استبيان الحقيبة</b>
+<div class="note" style="margin:4px 0">إجابات مجهولة المصدر. تُجمَّع هنا المتوسطات والفروق قبل الدورة وبعدها والتعليقات المفتوحة.</div>
+<button class="b" onclick="svLoadRes()">عرض النتائج</button> <button class="b s" id="sv_csvb" style="display:none" onclick="svCsv()">⬇️ تنزيل CSV</button><div id="sv_res"></div></div>
 
 <div id="sw_bar" style="padding:10px;border:1px solid var(--bd);border-radius:12px;margin:8px 0"><b>🎛️ مفاتيح التشغيل</b>
 <div style="margin-top:6px"><button class="b" id="sw_plat" onclick="swToggle('plat')" title="إيقاف/تشغيل المنصة للمتدربين">⏻ …</button></div>
@@ -1331,6 +1370,147 @@ async function boardOpenUnit(){document.querySelector('#nav button[data-t="board
  const i=BOARD_LESSONS.findIndex(l=>l.u===cur);if(i<0){alert('لا توجد سبورة لهذه الوحدة بعد. اختر من الدروس المتاحة في تبويب السبورة.');return}boardOpen(i)}
 document.querySelector('#nav button[data-t="board"]').addEventListener('click',boardScan);
 try{if(location.protocol==='file:')document.getElementById('sims_file').style.display='block'}catch(e){}
+</script>
+<script>
+/* ===== استبيان تقويم الحقيبة ===== */
+(function(){
+const DEMO = [
+  {k:'faculty',t:'الكلية (اكتب اسم كليتك)',text:true,ph:'مثال: كلية التربية'},
+  {k:'rank',t:'الدرجة العلمية',o:['محاضر','أستاذ مساعد','أستاذ مشارك','أستاذ']},
+  {k:'exp',t:'سنوات الخبرة في التدريس الجامعي',o:['أقل من 5','من 5 إلى 10','من 11 إلى 15','أكثر من 15']},
+  {k:'elexp',t:'خبرتي السابقة بالتعليم الإلكتروني قبل الدورة',o:['لا توجد','محدودة','متوسطة','كبيرة']},
+  {k:'tools',t:'أدوات التواصل التي أستخدمها غالباً مع طلابي (يمكن اختيار أكثر من واحدة)',multi:true,o:['تطبيقات المراسلة','البريد الإلكتروني','منصة تعلّم','لقاءات فيديو','غير ذلك']},
+  {k:'follow',t:'نسبة الأقسام التي تابعتها من الحقيبة',o:['كلها تقريباً','أغلبها','نصفها تقريباً','أقل من النصف']}
+];
+const COMPS = [
+  'أفهم لائحة التعليم الإلكتروني والتعليم المدمج لسنة 2026م وما تلزمني به',
+  'أميّز بين طرائق التعليم الإلكتروني الثماني الواردة في اللائحة',
+  'أوزّع أنشطة مقرري بين الإلكتروني والحضوري بحسب مخرجات التعلم',
+  'أكتب مخرجات تعلم قابلة للقياس وأربط بها الأنشطة والتقويم',
+  'أصمّم أنشطة واختبارات إلكترونية وأوزّع الدرجات وفق نوع المقرر',
+  'أتخذ إجراءات عملية لحماية نزاهة التقويم',
+  'أدرّس وأتفاعل مع طلابي بأدوات تعمل مع ضعف الإنترنت وانقطاع الكهرباء',
+  'أعدّ خطة استمرارية لتدريس مقرري في الظروف الاستثنائية',
+  'أقيس جودة مقرري وأكتب تقريره الفصلي',
+  'أحمي بيانات طلابي وأتعامل معها بالحد الأدنى اللازم'
+];
+const AGREE_LEG = '5 = موافق بشدة  ·  4 = موافق  ·  3 = محايد  ·  2 = غير موافق  ·  1 = غير موافق بشدة';
+const SECTIONS = [
+  {p:'s',title:'القسم الثالث: الرضا عن الحقيبة',sub:'إلى أي حد توافق على كل عبارة؟',leg:AGREE_LEG,items:[
+    'أهداف الحقيبة ومخرجاتها كانت واضحة لي منذ البداية',
+    'محتوى الحقيبة مرتبط بحاجاتي الفعلية في التدريس الجامعي',
+    'أنشطة الحقيبة ساعدتني على تطبيق ما تعلمته على مقرر حقيقي',
+    'زمن الدورة وتوزيع وحداتها كان مناسباً',
+    'أنا راضٍ عن الحقيبة بوجه عام',
+    'أوصي زملائي بالمشاركة في هذه الحقيبة']},
+  {p:'q',title:'القسم الرابع: جودة المحتوى والتصميم والمنصة',sub:'',leg:AGREE_LEG,items:[
+    'المحتوى دقيق وموثّق ويتفق مع نصوص لائحة التعليم الإلكتروني والتعليم المدمج',
+    'شرح الوحدات واضح ومنظّم ويسهل متابعته',
+    'السبورة والرسومات والأمثلة ساعدتني على الفهم',
+    'المراجعة والاختبارات والتغذية الراجعة مناسبة لقياس تعلّمي',
+    'المشروع الختامي مناسب ومرتبط بالمخرجات',
+    'المنصة سهلة الاستخدام ويمكن الوصول إليها بسهولة']},
+  {p:'r',title:'القسم الخامس: الاستعداد للتطبيق',sub:'',leg:AGREE_LEG,items:[
+    'سأطبّق ما تعلمته في مقرر أدرّسه في الفصل القادم',
+    'أصبحت أكثر ثقة في تدريس مقرري بنمط مدمج',
+    'أصبحت أكثر قدرة على مواصلة التدريس عند ضعف الاتصال أو انقطاعه',
+    'أستطيع الآن إعداد خطة استمرارية لمقرري دون مساعدة',
+    'أحتاج إلى دعم لاحق من وحدة التعليم الإلكتروني لتطبيق ما تعلمته']},
+  {p:'b',title:'القسم السادس: المعوقات',sub:'إلى أي حد كان كل مما يلي عائقاً أمام استفادتك من الحقيبة وتطبيقها؟',
+   leg:'5 = عائق كبير جداً  ·  4 = عائق كبير  ·  3 = عائق متوسط  ·  2 = عائق ضعيف  ·  1 = ليس عائقاً',items:[
+    'ضعف الإنترنت',
+    'انقطاع الكهرباء',
+    'ضيق الوقت وكثرة الأعباء الأكاديمية',
+    'قلة الدعم الفني',
+    'قلة التدريب العملي على الأدوات الرقمية',
+    'عدم وضوح تطبيق اللائحة داخل الجامعة']}
+];
+const OPEN = [
+  {k:'o1',t:'أكثر ما استفدته من الحقيبة'},
+  {k:'o2',t:'ما الذي ينبغي تغييره أو إضافته في الحقيبة؟'},
+  {k:'o3',t:'ما أكبر عقبة ستواجهك عند تطبيق ما تعلمته؟'}
+];
+const q=(s,r)=>(r||document).querySelector(s), form=q('#sv_form'), KEY='odl_svy_draft_v2';
+const required=[]; let state={}, ROWS=[];
+const esc2=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function scale(n){return '<div class="sc" role="radiogroup">'+[5,4,3,2,1].map(v=>'<label><input type="radio" name="'+n+'" value="'+v+'"><span>'+v+'</span></label>').join('')+'</div>'}
+function pills(d){const t=d.multi?'checkbox':'radio';return '<div class="pl">'+d.o.map(o=>'<label><input type="'+t+'" name="'+d.k+'" value="'+o+'"><span>'+o+'</span></label>').join('')+'</div>'}
+function build(){let h='';
+  h+='<section class="card svc"><h3>القسم الأول: بيانات أولية</h3>';
+  DEMO.forEach((d,i)=>{required.push(d.k);h+='<div class="it" data-key="'+d.k+'"><p class="q"><span class="n">'+(i+1)+'.</span>'+d.t+'</p>'+(d.text?'<input type="text" class="plain" name="'+d.k+'" maxlength="80" placeholder="'+d.ph+'">':pills(d))+'</div>'});
+  h+='</section><section class="card svc"><h3>القسم الثاني: مستوى التمكّن قبل الدورة وبعدها</h3><p class="sub">قدّر مستوى تمكنك من كل كفاية في الحالين: <b>قبل الدورة</b> و<b>بعدها</b>.</p><p class="lg">5 = ممتاز  ·  4 = جيد  ·  3 = متوسط  ·  2 = ضعيف  ·  1 = ضعيف جداً</p>';
+  COMPS.forEach((t,i)=>{const n=i+1;required.push('c'+n+'b','c'+n+'a');h+='<div class="it" data-key="c'+n+'"><p class="q"><span class="n">'+n+'.</span>'+t+'</p><div class="pair"><div><p class="cap">قبل الدورة</p>'+scale('c'+n+'b')+'</div><div><p class="cap">بعد الدورة</p>'+scale('c'+n+'a')+'</div></div></div>'});
+  h+='</section>';
+  SECTIONS.forEach(s=>{h+='<section class="card svc"><h3>'+s.title+'</h3>'+(s.sub?'<p class="sub">'+s.sub+'</p>':'')+'<p class="lg">'+s.leg+'</p>';
+    s.items.forEach((t,i)=>{const k=s.p+(i+1);required.push(k);h+='<div class="it" data-key="'+k+'"><p class="q"><span class="n">'+(i+1)+'.</span>'+t+'</p>'+scale(k)+'</div>'});h+='</section>'});
+  h+='<section class="card svc"><h3>القسم السابع: أسئلة مفتوحة <small style="color:var(--mu);font-weight:400">(اختيارية)</small></h3>';
+  OPEN.forEach((o,i)=>{h+='<div class="it"><p class="q"><span class="n">'+(i+1)+'.</span>'+o.t+'</p><textarea name="'+o.k+'" rows="3" maxlength="1500"></textarea></div>'});
+  form.innerHTML=h+'</section>'}
+function read(){const s={};
+  form.querySelectorAll('input[type=radio]:checked').forEach(i=>{s[i.name]=/^(c\d+[ab]|[sqrb]\d)$/.test(i.name)?Number(i.value):i.value});
+  const tl=[...form.querySelectorAll('input[name=tools]:checked')].map(i=>i.value);if(tl.length)s.tools=tl;
+  form.querySelectorAll('input.plain').forEach(i=>{if(i.value.trim())s[i.name]=i.value.trim()});
+  form.querySelectorAll('textarea').forEach(t=>{if(t.value.trim())s[t.name]=t.value.trim()});return s}
+const filled=k=>{const v=state[k];return Array.isArray(v)?v.length>0:(v!==undefined&&v!=='')};
+const itemDone=k=>/^c\d+$/.test(k)?(filled(k+'b')&&filled(k+'a')):filled(k);
+function progress(){const d=required.filter(filled).length;q('#sv_cnt').textContent=d+' / '+required.length;q('#sv_bar').style.width=Math.round(d/required.length*100)+'%'}
+let tm;function onCh(){state=read();progress();clearTimeout(tm);tm=setTimeout(()=>{try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}},300);
+  form.querySelectorAll('.miss').forEach(e=>{if(itemDone(e.dataset.key))e.classList.remove('miss')})}
+function restore(){let d;try{d=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){d=null}if(!d)return;
+  Object.keys(d).forEach(k=>{const tx=form.querySelector('input.plain[name="'+k+'"]');if(tx){tx.value=d[k];return}
+    if(k==='tools'){d[k].forEach(v=>{const el=[...form.querySelectorAll('input[name=tools]')].find(i=>i.value===v);if(el)el.checked=true});return}
+    if(/^o\d$/.test(k)){const ta=form.querySelector('textarea[name='+k+']');if(ta)ta.value=d[k];return}
+    const el=[...form.querySelectorAll('input[name="'+k+'"]')].find(i=>i.value===String(d[k]));if(el)el.checked=true});state=read();progress()}
+function msg(t,c){const m=q('#sv_msg');m.textContent=t||'';m.style.color=c==='ok'?'var(--ok)':'var(--no)'}
+function showDone(t){q('#sv_app').style.display='none';q('#sv_done').style.display='block';q('#sv_donetxt').textContent=t||'نشكر لك وقتك ومشاركتك الصادقة في تطوير الحقيبة.'}
+const ERR={done:'سبق أن أرسلت إجاباتك. شكراً لك.',incomplete:'بعض الإجابات المطلوبة ناقصة.',unauth:'انتهت جلسة دخولك. أعد الدخول ثم أعد الإرسال.'};
+async function post(o){const r=await fetch(SHEET_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(o)});return r.json()}
+async function send(){state=read();
+  form.querySelectorAll('.miss').forEach(e=>e.classList.remove('miss'));
+  const miss=required.filter(k=>!filled(k));
+  if(miss.length){miss.forEach(k=>{const b=/^c\d+[ab]$/.test(k)?k.slice(0,-1):k;const el=form.querySelector('.it[data-key="'+b+'"]');if(el)el.classList.add('miss')});
+    msg('أكمل الأسئلة المظلّلة بالأحمر (ما زال ناقصاً: '+miss.length+')');const f=form.querySelector('.miss');if(f)f.scrollIntoView({block:'center'});return}
+  if(!AG||!AG.t){msg('سجّل الدخول أولاً.');return}
+  const btn=q('#sv_send');btn.disabled=true;msg('جارٍ الإرسال…','ok');
+  try{const j=await post({action:'sv_submit',tok:AG.t,ans:state});
+    if(j&&j.ok){try{localStorage.removeItem(KEY)}catch(e){}showDone();return}
+    if(j&&j.error==='done'){showDone(ERR.done);return}
+    msg(ERR[j&&(j.error||j.err)]||'تعذّر الإرسال. حاول مرة أخرى.')}
+  catch(e){msg('تعذّر الاتصال بالخادم. إجاباتك محفوظة على جهازك، حاول مرة أخرى.')}
+  btn.disabled=false}
+let built=false;
+window.svOpen=async function(){
+  if(!built){build();form.addEventListener('change',onCh);form.addEventListener('input',onCh);restore();built=true;
+    q('#sv_send').addEventListener('click',send);
+    q('#sv_clear').addEventListener('click',()=>{if(!confirm('هل تريد مسح كل إجاباتك؟'))return;try{localStorage.removeItem(KEY)}catch(e){}form.reset();state={};progress();msg('')})}
+  try{if(AG&&AG.t&&SHEET_URL){const j=await post({action:'sv_status',tok:AG.t});if(j&&j.ok&&j.done)showDone(ERR.done)}}catch(e){}};
+document.querySelector('#nav button[data-t="survey"]').addEventListener('click',window.svOpen);
+/* ---- نتائج المدرب ---- */
+const mean=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:NaN, f1=x=>isFinite(x)?x.toFixed(2):'—';
+const nums=k=>ROWS.map(r=>Number(r[k])).filter(n=>n>=1&&n<=5);
+window.svLoadRes=async function(){const box=q('#sv_res');box.innerHTML='<p class="note">⏳ جارٍ التحميل...</p>';
+  try{const j=await post({action:'sv_results',pin:TP});if(!j.ok)throw 0;ROWS=j.rows||[];
+    if(!ROWS.length){box.innerHTML='<p class="note">لا توجد إجابات بعد.</p>';return}
+    let h='<p class="note"><b>عدد المستجيبين: '+ROWS.length+'</b></p>';
+    h+='<b>القسم الثاني: التمكّن قبل الدورة وبعدها</b><table><tr><th>الكفاية</th><th>قبل</th><th>بعد</th><th>الفرق</th></tr>'+COMPS.map((t,i)=>{const b=mean(nums('c'+(i+1)+'b')),a=mean(nums('c'+(i+1)+'a'));return '<tr><td class="t">'+(i+1)+'. '+esc2(t)+'</td><td>'+f1(b)+'</td><td>'+f1(a)+'</td><td><b>'+(isFinite(a-b)?((a-b>=0?'+':'')+(a-b).toFixed(2)):'—')+'</b></td></tr>'}).join('')+'</table>';
+    SECTIONS.forEach(s=>{h+='<b>'+esc2(s.title)+'</b><table><tr><th>العبارة</th><th>المتوسط</th><th>5</th><th>4</th><th>3</th><th>2</th><th>1</th></tr>'+s.items.map((t,i)=>{const v=nums(s.p+(i+1));return '<tr><td class="t">'+(i+1)+'. '+esc2(t)+'</td><td><b>'+f1(mean(v))+'</b></td>'+[5,4,3,2,1].map(x=>'<td>'+v.filter(n=>n===x).length+'</td>').join('')+'</tr>'}).join('')+'</table>'});
+    OPEN.forEach(o=>{const t=ROWS.map(r=>String(r[o.k]||'').trim()).filter(Boolean);h+='<b>'+esc2(o.t)+'</b> ('+t.length+')'+(t.length?'<ul>'+t.map(x=>'<li>'+esc2(x)+'</li>').join('')+'</ul>':'<p class="note">لا توجد تعليقات.</p>')});
+    box.innerHTML=h;q('#sv_csvb').style.display='inline-block'}
+  catch(e){box.innerHTML='<p class="note">تعذّر تحميل النتائج. تأكد من نشر أحدث Code.gs.</p>'}};
+window.svCsv=function(){if(!ROWS.length)return;const ks=Object.keys(ROWS[0]);
+  const c=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
+  const t='\ufeff'+ks.map(c).join(',')+'\n'+ROWS.map(r=>ks.map(k=>c(r[k])).join(',')).join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/csv;charset=utf-8'}));a.download='survey-results.csv';a.click()};
+})();
+</script>
+<script>
+/* عرض المحاولات المتبقية للسبورة داخل الحقيبة */
+async function wbmLeft(){const e=document.getElementById('wbm_left');if(!e)return;
+ if(typeof AG==='undefined'||!AG.t||!SHEET_URL){e.textContent='سجّل الدخول لترى محاولاتك.';return}
+ try{const r=await fetch(SHEET_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'wb_status',tok:AG.t})});const j=await r.json();
+  e.textContent=j&&j.ok?('🎟️ محاولات البناء المتبقية لك اليوم: '+j.left+' من 3'+(j.left===0?' — تتجدد غداً تلقائياً، أو اطلب التجديد من داخل الاستوديو':'')):'';}
+ catch(x){e.textContent=''}}
+document.querySelector('#nav button[data-t="board"]').addEventListener('click',wbmLeft);
 </script>
 </body>
 </html>
