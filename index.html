@@ -77,6 +77,7 @@ table.t{border-collapse:collapse;width:100%;font-size:.88rem}table.t th,table.t 
 <nav id="nav">
 <button data-t="explain" class="on">📖 الشرح</button>
 <button data-t="board">🎞️ السبورة</button>
+<button data-t="sims">🧭 المحاكاة</button>
 <button data-t="review">🔁 المراجعة</button>
 <button data-t="exam">📝 الاختبار</button>
 <button data-t="project">🛠️ المشروع</button>
@@ -87,6 +88,19 @@ table.t{border-collapse:collapse;width:100%;font-size:.88rem}table.t th,table.t 
 <div id="nbar" style="display:none;background:var(--ac);color:#fff;padding:10px 16px;text-align:center;font-weight:700"></div>
 <div id="trk_me" style="display:none"></div>
 <main>
+<!-- المحاكاة والجولات التفاعلية -->
+<div id="sims" class="tab" style="display:none">
+<div class="card"><h2>🧭 المحاكاة والجولات التفاعلية</h2>
+<p class="note" id="sims_file" style="display:none;color:var(--no)">⚠️ أنت تفتح الحقيبة من ملف على جهازك، فلن تعمل المحاكاة والجولات كاملة. افتحها من رابط الموقع على الإنترنت.</p>
+<div style="border:1px solid var(--bd);border-radius:12px;padding:12px 14px;margin:10px 0">
+<b>🧭 محاكاة الجلسة الثالثة: المتابعة الاستراتيجية والروتين القيادي</b>
+<p class="note">تعمل عميداً لكليتك على مدى أربعة أسابيع: ترد على رؤساء أقسامك، وتقرأ المؤشرات، وترفع سؤالاً للمركز، وتقرر أمام المجلس، وتبني روتينك. اكتب في البداية اسم كليتك وأسماء ثلاثة من أقسامك والمقرر الحرج، وتستطيع تنفيذها وحدك أو مع رؤساء أقسامك. تحتاج تسجيل الدخول برقم واتساب أولاً، وتصل نتيجتك للمدرب.</p>
+<a class="b p" href="session3-leadership-simulator.html" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block">ابدأ المحاكاة ›</a></div>
+<div style="border:1px solid var(--bd);border-radius:12px;padding:12px 14px;margin:10px 0">
+<b>🗺️ الجولة التفاعلية على منصة الحقيبة (الجلسة الأولى)</b>
+<p class="note">جولة تطبيقية تعرّفك بالبوابة وأنظمتها خطوة بخطوة.</p>
+<a class="b" href="session1-platform-tour.html" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block">افتح الجولة ›</a></div>
+</div></div>
 <!-- الوكلاء الذكيون -->
 <div id="agents" class="tab" style="display:none">
 <div class="card"><h2>🤖 الوكلاء الذكيون</h2>
@@ -1316,6 +1330,7 @@ function boardOpen(i){const L=BOARD_LESSONS[i];if(!L)return;
 async function boardOpenUnit(){document.querySelector('#nav button[data-t="board"]').click();await boardScan();
  const i=BOARD_LESSONS.findIndex(l=>l.u===cur);if(i<0){alert('لا توجد سبورة لهذه الوحدة بعد. اختر من الدروس المتاحة في تبويب السبورة.');return}boardOpen(i)}
 document.querySelector('#nav button[data-t="board"]').addEventListener('click',boardScan);
+try{if(location.protocol==='file:')document.getElementById('sims_file').style.display='block'}catch(e){}
 </script>
 </body>
 </html>
