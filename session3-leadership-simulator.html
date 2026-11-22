@@ -290,7 +290,15 @@ function sideHTML(){
 function gateScreen(){feed.innerHTML='';$('side').innerHTML='';
  html(0,`<div class="start"><h2 style="margin-top:0">🔐 الدخول بحسابك أولاً</h2><p>هذه المحاكاة للمتدربين المسجلين فقط. سجّل الدخول من حقيبة التدريب برقم الواتساب ورمز التحقق، ثم افتح «الجلسة الثالثة» وابدأ منها، لتُسجَّل نتيجتك باسمك ويصل تقدمك للمدرب.</p><p><a class="b p" href="index.html" style="text-decoration:none;display:inline-block">الذهاب إلى تسجيل الدخول ›</a></p><p style="font-size:.8rem;color:var(--mu)">إن كنتَ قد سجّلت الدخول ولا تزال ترى هذه الشاشة، فافتح المحاكاة من الحقيبة نفسها وعلى المتصفح نفسه الذي دخلتَ منه.</p></div>`)}
 function startScreen(){
- if(!TOK()&&location.hash!=='#coach'){gateScreen();return}
+ if(location.hash==='#coach'){startMain('');return}
+ if(!TOK()){gateScreen();return}
+ feed.innerHTML='';html(0,'<div class="start"><p>⏳ جارٍ التحقق من تسجيل دخولك...</p></div>');
+ call({action:'auth_check',tok:TOK()}).then(j=>{
+  if(j&&j.ok){startMain(j.name||'');return}
+  if(j&&(j.err==='paused'||j.err==='locked')){feed.innerHTML='';html(0,'<div class="start"><p>⏸️ المنصة متوقفة مؤقتاً. حاول لاحقاً أو تواصل مع المدرب.</p></div>');return}
+  ['odl_tok','odl_ph','odl_nm'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});gateScreen()
+ }).catch(()=>{feed.innerHTML='';html(0,'<div class="start"><p>⚠️ تعذّر الاتصال بالخادم للتحقق من دخولك.</p><button class="b p" id="rt">↻ إعادة المحاولة</button></div>');$('rt').onclick=startScreen})}
+function startMain(authName){
  feed.innerHTML='';const saved=(()=>{try{return JSON.parse(localStorage.getItem(LS)||'null')}catch(e){return null}})();
  html(0,`<div class="start"><h2 style="margin-top:0">🎓 مرحباً بك عميداً لكلية العلوم الإدارية والمحاسبة</h2>
  <p>بعد الجلسة الثانية صار عندك خطة من ثلاثة بنود. في هذه المحاكاة تتابع تنفيذها على مدى <b>أربعة أسابيع</b>: ترد على رؤساء الأقسام، تقرأ المؤشرات، ترفع أسئلة للمركز، تقرر أمام المجلس، وتبني روتينك القيادي.</p>
@@ -312,9 +320,7 @@ function startScreen(){
   save();feed.innerHTML='';sideHTML();playEvent()};
  const r=$('resume');if(r)r.onclick=()=>{S=saved;if(S.cfg){applyCfg(S.cfg);retext(document.querySelector('.top'))}feed.innerHTML='';bubble('sys','استُؤنفت محاكاتك عند القرار '+(S.ev+1)+'.');sideHTML();playEvent()};
  if(location.hash==='#coach')coachPanel();
- else call({action:'auth_check',tok:TOK()}).then(j=>{
-   if(j&&!j.ok&&(j.code==='SESSION_INVALID'||j.err==='unauth')){['odl_tok','odl_ph','odl_nm'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});startScreen()}
-   else if(j&&j.ok&&j.name){const n=$('nm');if(n){n.value=j.name;n.readOnly=true}}}).catch(()=>{});
+ if(authName){const n=$('nm');if(n){n.value=authName;n.readOnly=true}}
  sideHTML()}
 function sayList(list,cb,i=0){if(i>=list.length)return cb&&cb();const [c,t0]=list[i];let t=typeof t0==='function'?t0():t0;
  if(t==='__DASH__')t=dashHTML();else if(t==='__PEMS__')t=pemsHTML();else if(t==='__REV__')t=revHTML();
