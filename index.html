@@ -241,6 +241,8 @@ table.t{border-collapse:collapse;width:100%;font-size:.88rem}table.t th,table.t 
 <button class="b r" onclick="chRun()">🔄 بدء الدورة الجديدة</button><div class="fb" id="ch_msg"></div></details>
 <hr><b>📢 إرسال إشعار للمتدربين</b><input type="text" id="ntext" placeholder="نص الإشعار"><button class="b" onclick="postNote()">نشر الإشعار</button><div class="fb" id="nerr"></div>
 <hr><b>🔐 إدارة الدخول (رمز التحقق)</b><textarea id="ag_roster" rows="4" dir="rtl" placeholder="الاسم،الرقم — سطر لكل متدرب. مثال: أحمد علي،249912345678"></textarea><button class="b" onclick="agSaveRoster()">حفظ قائمة المسجلين</button> <button class="b s" onclick="agLoadReq()">🔄 تحديث الطلبات</button><div class="fb" id="ag_aerr"></div><div id="ag_req"></div><hr><button class="b s" onclick="agUsers()">👥 المسجلون ومحاولات الذكاء الاصطناعي</button><div id="ag_users"></div> <p class="note" id="tcount"></p>
+<hr><b>🧭 نتائج محاكاة الجلسة الثالثة (العمداء)</b> <button class="b s" onclick="simLoad()">🔄 تحديث</button> <button class="b s" onclick="simCsv()">⬇️ تنزيل CSV</button> <a class="b s" href="session3-leadership-simulator.html#coach" target="_blank" rel="noopener" style="text-decoration:none" title="يفتح المحاكاة في وضع المدرب لتوليد أصوات الشخصيات وحفظها">🎙️ توليد أصوات الشخصيات (Fenrir)</a>
+<div id="sim_box" style="margin-top:6px"><p class="note">اضغط «تحديث» لعرض النتائج.</p></div>
 <div id="rkbar" class="note"></div><div class="wrapx"><table class="t" id="ttab"></table></div>
 </div>
 </div>
@@ -712,7 +714,7 @@ function renderAnalytics(){const box=$('ana');if(!box)return;const L=latestRes(R
 
 function tLogout(){TP='';try{$('pin').value=''}catch(e){}location.reload()}   /* يمسح الرمز والبيانات المعروضة من الذاكرة */
 async function unlock(){if(!SHEET_URL){$('perr').textContent='لم يُضبط رابط Google Sheets في الملف';return}
- try{const j=await api({action:'list',pin:$('pin').value});if(!j.ok){$('perr').textContent=pinErr(j);return}TP=$('pin').value;$('tlock').style.display='none';$('tpanel').style.display='block';loadRes();if(window.agLoadReq)agLoadReq();if(window.agUsers)agUsers()}catch(e){$('perr').textContent='الرمز غير صحيح أو تعذّر الاتصال'}}
+ try{const j=await api({action:'list',pin:$('pin').value});if(!j.ok){$('perr').textContent=pinErr(j);return}TP=$('pin').value;$('tlock').style.display='none';$('tpanel').style.display='block';loadRes();if(window.agLoadReq)agLoadReq();if(window.agUsers)agUsers();if(window.simLoad)simLoad()}catch(e){$('perr').textContent='الرمز غير صحيح أو تعذّر الاتصال'}}
 function fixScore(r){const t=String(r.score==null?'':r.score).replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[٫,]/g,'.').trim();
   if(t!==''&&isFinite(+t)){r.score=+t;return r}
   try{const rr=JSON.parse(r.rows);if(Array.isArray(rr)&&rr.length)r.score=Math.max(0,Math.round(rr.reduce((s,x)=>s+(+x.pt||0),0)*100)/100)}catch(e){}
@@ -1149,6 +1151,34 @@ async function loadVid(){
   catch(e){b.innerHTML='<p class="note">تعذّر التحميل. تأكد من نشر أحدث Code.gs وتشغيل authorize.</p>'}}
 async function vidFb(ph,ts){const k=ph+'_'+ts;try{const j=await api({action:'video_fb',pin:TP,ph:ph,ts:ts,text:$('vf_'+k).value,rating:$('vr_'+k).value});alert(j.ok?'تم الحفظ. سيراه المتدرب في «تغذيتي الراجعة».':'تعذّر الحفظ')}catch(e){alert('تعذّر الاتصال')}}
 
+
+/* ===== نتائج محاكاة الجلسة الثالثة (لوحة المدرب) ===== */
+const SIM_COMP={lead:'التكليف والقيادة',read:'القراءة والتفسير',diag:'التشخيص واتخاذ القرار',esc:'التصعيد للمركز',time:'الوقت والروتين',follow:'المتابعة',rep:'التقارير'};
+let SIM_ROWS=[];
+const simCol=p=>p>=80?'#1b7f45':p>=50?'#d9a400':'#b3261e';
+function simWeak(r){let w=null;Object.keys(r.comp||{}).forEach(k=>{const c=r.comp[k];if(c&&c[1]>0){const p=c[0]/c[1];if(!w||p<w.p)w={k:k,p:p}}});return w}
+async function simLoad(){const box=$('sim_box');if(!box)return;box.innerHTML='<p class="note">⏳ جارٍ التحميل...</p>';
+  try{const j=await api({action:'sim_list',pin:TP});if(!j.ok)throw new Error(j.err||'');SIM_ROWS=j.rows||[];simRender()}
+  catch(e){box.innerHTML='<p class="note">تعذّر تحميل نتائج المحاكاة.</p>'}}
+function simRender(){const box=$('sim_box'),R=SIM_ROWS;
+  if(!R.length){box.innerHTML='<p class="note">لم يُرسل أي متدرب نتيجة المحاكاة بعد.</p>';return}
+  const avg=a=>a.length?Math.round(a.reduce((s,x)=>s+x,0)/a.length):0;
+  const cs=Object.keys(SIM_COMP).map(k=>{const ps=R.map(r=>r.comp&&r.comp[k]&&r.comp[k][1]>0?r.comp[k][0]/r.comp[k][1]*100:null).filter(x=>x!==null);return{k:k,p:ps.length?avg(ps):null}});
+  const weakest=cs.filter(c=>c.p!==null).sort((a,b)=>a.p-b.p)[0];
+  const strong=R.filter(r=>r.best>=75).length,ag=R.filter(r=>r.agent&&r.agent.src==='agents').length;
+  const card=(t,v)=>'<div style="flex:1;min-width:120px;border:1px solid var(--bd);border-radius:12px;padding:6px 10px;text-align:center"><div class="note">'+t+'</div><b style="font-size:1.3rem">'+v+'</b></div>';
+  let o='<div style="display:flex;gap:8px;flex-wrap:wrap;margin:6px 0">'+card('المتدربون',R.length)+card('متوسط أفضل نتيجة',avg(R.map(r=>r.best))+' / 100')+card('وصلوا 75 فأكثر',strong+' من '+R.length)+card('قيّمهم وكلاء المنصة',ag+' من '+R.length)+'</div>';
+  o+='<b>متوسط الكفايات للمجموعة</b>'+(weakest?' <span class="note">— الأضعف: '+esc(SIM_COMP[weakest.k])+' ('+weakest.p+'%)</span>':'');
+  o+=cs.map(c=>c.p===null?'':'<div style="margin:4px 0"><div style="display:flex;justify-content:space-between;font-size:.85rem"><span>'+esc(SIM_COMP[c.k])+'</span><b>'+c.p+'%</b></div><div style="height:10px;border-radius:6px;background:var(--bd);overflow:hidden"><i style="display:block;height:100%;width:'+c.p+'%;background:'+simCol(c.p)+'"></i></div></div>').join('');
+  o+='<div class="wrapx" style="margin-top:8px"><table class="t"><tr><th>المتدرب</th><th>آخر نتيجة</th><th>الأفضل</th><th>المحاولات</th><th>التصنيف</th><th>أضعف كفاية</th><th>تقييم الرسالة</th><th>التاريخ</th><th>تفصيل</th></tr>';
+  o+=R.map(r=>{const w=simWeak(r),hist=(r.hist||[]).map(x=>'<tr><td>'+esc(x.title)+'</td><td>'+esc(String(x.earned))+' / '+esc(String(x.max))+'</td></tr>').join(''),rt=r.routine?'<div class="note">الروتين: لوحة '+esc(r.routine.d1)+' · مقررات '+esc(r.routine.d2)+' · تقرير شهري '+esc(r.routine.m3)+' · تصدير '+esc(r.routine.e4)+'</div>':'';
+    return '<tr><td>'+esc(r.name||'—')+' <span dir="ltr" class="note">'+esc(r.ph)+'</span>'+(r.overload?' ⚠️':'')+'</td><td><b style="color:'+simCol(r.score)+'">'+r.score+'</b></td><td>'+r.best+'</td><td>'+r.tries+'</td><td>'+esc(r.persona||'')+'</td><td>'+(w?esc(SIM_COMP[w.k]||w.k)+' ('+Math.round(w.p*100)+'%)':'—')+'</td><td>'+(r.agent?(r.agent.src==='agents'?'🤖 وكلاء':'محلي')+' ('+r.agent.score+'/12)':'—')+'</td><td>'+(r.ts?new Date(r.ts).toLocaleDateString('ar'):'')+'</td><td><details><summary>عرض</summary><div style="min-width:260px"><table class="t"><tr><th>القرار</th><th>النقاط</th></tr>'+hist+'</table><div class="note">DPI '+r.kpi.dpi+'/50 · API '+r.kpi.api+'/50 · الاعتماد '+r.kpi.acc+'%'+(r.overload?' · كتب تقرير القسم بنفسه ⚠️':'')+'</div>'+rt+(r.agent&&r.agent.why?'<div class="note">تعليق الوكيل: '+esc(r.agent.why)+'</div>':'')+'</div></details></td></tr>'}).join('');
+  box.innerHTML=o+'</table></div>'}
+function simCsv(){if(!SIM_ROWS.length){alert('لا توجد نتائج لتنزيلها. اضغط تحديث أولاً.');return}
+  const ks=Object.keys(SIM_COMP),q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
+  const rows=[['الاسم','الهاتف','آخر نتيجة','الأفضل','المحاولات','التصنيف'].concat(ks.map(k=>SIM_COMP[k]+' %')).concat(['DPI','API','ملف الاعتماد','مقيّم الرسالة','درجة الرسالة','التاريخ'])];
+  SIM_ROWS.forEach(r=>rows.push([r.name,r.ph,r.score,r.best,r.tries,r.persona].concat(ks.map(k=>r.comp&&r.comp[k]&&r.comp[k][1]>0?Math.round(r.comp[k][0]/r.comp[k][1]*100):'')).concat([r.kpi.dpi,r.kpi.api,r.kpi.acc,r.agent?(r.agent.src==='agents'?'وكلاء المنصة':'محلي'):'',r.agent?r.agent.score:'',r.ts?new Date(r.ts).toISOString():''])));
+  const b=new Blob(['\ufeff'+rows.map(r=>r.map(q).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='نتائج_محاكاة_الجلسة_الثالثة.csv';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},600)}
 
 /* ===== تتبع المتدربين وتقارير واتساب (لوحة المدرب) ===== */
 const TRK_IC={done:'✅',wip:'⏳',todo:'⬜'};
