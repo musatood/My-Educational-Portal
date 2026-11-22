@@ -290,7 +290,16 @@ function sideHTML(){
 function gateScreen(){feed.innerHTML='';$('side').innerHTML='';
  html(0,`<div class="start"><h2 style="margin-top:0">🔐 الدخول بحسابك أولاً</h2><p>هذه المحاكاة للمتدربين المسجلين فقط. سجّل الدخول من حقيبة التدريب برقم الواتساب ورمز التحقق، ثم افتح «الجلسة الثالثة» وابدأ منها، لتُسجَّل نتيجتك باسمك ويصل تقدمك للمدرب.</p><p><a class="b p" href="index.html" style="text-decoration:none;display:inline-block">الذهاب إلى تسجيل الدخول ›</a></p><p style="font-size:.8rem;color:var(--mu)">إن كنتَ قد سجّلت الدخول ولا تزال ترى هذه الشاشة، فافتح المحاكاة من الحقيبة نفسها وعلى المتصفح نفسه الذي دخلتَ منه.</p></div>`)}
 function startScreen(){
- if(location.hash==='#coach'){startMain('');return}
+ if(location.hash==='#coach'){
+  if(window._pinOK){startMain('');return}
+  feed.innerHTML='';$('side').innerHTML='';
+  html(0,'<div class="start"><h2 style="margin-top:0">🎙️ وضع المدرب</h2><p>أدخل رمز المدرب للمتابعة.</p><input type="password" id="cpin0" placeholder="رمز المدرب" style="max-width:260px"> <button class="b p" id="cgo0">دخول</button><div id="cmsg0" style="margin-top:8px;font-weight:700"></div></div>');
+  const go0=async()=>{const p=$('cpin0').value;if(!p)return;$('cmsg0').textContent='⏳ ...';
+   try{const j=await call({action:'sim_list',pin:p});
+    if(j&&j.ok){window._pin=p;window._pinOK=true;startMain('')}
+    else $('cmsg0').textContent=j&&j.err==='locked'?'🔒 مقفل مؤقتاً، حاول بعد '+(j.wait||15)+' دقيقة.':'⚠️ الرمز غير صحيح.'}
+   catch(e){$('cmsg0').textContent='⚠️ تعذّر الاتصال بالخادم.'}};
+  $('cgo0').onclick=go0;$('cpin0').onkeydown=e=>{if(e.key==='Enter')go0()};return}
  if(!TOK()){gateScreen();return}
  feed.innerHTML='';html(0,'<div class="start"><p>⏳ جارٍ التحقق من تسجيل دخولك...</p></div>');
  call({action:'auth_check',tok:TOK()}).then(j=>{
