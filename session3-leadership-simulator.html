@@ -287,7 +287,10 @@ function sideHTML(){
  <h3>الثقة</h3><div class="mood"><div><b>${MOOD(S.mktM)}</b>التسويق</div><div><b>${MOOD(S.staM)}</b>الإحصاء</div><div><b>${MOOD(S.accM)}</b>المحاسبة</div><div><b>${MOOD(S.ctr)}</b>المركز</div></div>
  <h3>الكفايات</h3>${cp}<h3>آخر الآثار</h3><div class="log">${S.log.length?S.log.join('<br>'):'— لا آثار بعد'}</div>`;
  $('ptv').textContent=S.pts}
+function gateScreen(){feed.innerHTML='';$('side').innerHTML='';
+ html(0,`<div class="start"><h2 style="margin-top:0">🔐 الدخول بحسابك أولاً</h2><p>هذه المحاكاة للمتدربين المسجلين فقط. سجّل الدخول من حقيبة التدريب برقم الواتساب ورمز التحقق، ثم افتح «الجلسة الثالثة» وابدأ منها، لتُسجَّل نتيجتك باسمك ويصل تقدمك للمدرب.</p><p><a class="b p" href="index.html" style="text-decoration:none;display:inline-block">الذهاب إلى تسجيل الدخول ›</a></p><p style="font-size:.8rem;color:var(--mu)">إن كنتَ قد سجّلت الدخول ولا تزال ترى هذه الشاشة، فافتح المحاكاة من الحقيبة نفسها وعلى المتصفح نفسه الذي دخلتَ منه.</p></div>`)}
 function startScreen(){
+ if(!TOK()&&location.hash!=='#coach'){gateScreen();return}
  feed.innerHTML='';const saved=(()=>{try{return JSON.parse(localStorage.getItem(LS)||'null')}catch(e){return null}})();
  html(0,`<div class="start"><h2 style="margin-top:0">🎓 مرحباً بك عميداً لكلية العلوم الإدارية والمحاسبة</h2>
  <p>بعد الجلسة الثانية صار عندك خطة من ثلاثة بنود. في هذه المحاكاة تتابع تنفيذها على مدى <b>أربعة أسابيع</b>: ترد على رؤساء الأقسام، تقرأ المؤشرات، ترفع أسئلة للمركز، تقرر أمام المجلس، وتبني روتينك القيادي.</p>
@@ -302,13 +305,16 @@ function startScreen(){
  <label>طريقة التنفيذ:</label><select id="mode"><option value="solo">فردي: أقرر وحدي</option><option value="team"${saved&&saved.mode==='team'?' selected':''}>فريق: مع رؤساء أقسامي</option></select>
  <details style="margin:6px 0"><summary><b>كيف تُجرى المحاكاة مع رؤساء الأقسام؟</b></summary><ol style="margin:6px 0"><li>اكتب اسم كليتك وأسماء ثلاثة من أقسامك، فتجري الحالة على كليتك بأسماء أقسامها.</li><li>يجلس العميد أمام الجهاز، ويأخذ رؤساء الأقسام الثلاثة أدوارهم: الأول صاحب المقرر الحرج، والثاني صاحب الامتحان، والثالث صاحب ملف الاعتماد.</li><li>عند كل قرار يقرأ صاحب الدور كلام شخصيته، ثم يناقش الفريق دقيقة أو دقيقتين، ويقرر العميد.</li><li>في النهاية يملأ الفريق ورقة «طبّق على كليتك» بأرقام كليتهم الفعلية.</li></ol><p class="note">الأرقام والأحداث افتراضية، أما الأسماء فأسماؤكم. أصوات الشخصيات تُولَّد عند أول سماع (ثم تُحفظ) وتتحول إلى صوت المتصفح إن بلغ الحد اليومي.</p></details>
  <p style="display:flex;gap:8px;flex-wrap:wrap"><button class="b p" id="go">ابدأ المحاكاة ›</button>${saved&&!saved.done&&saved.ev>0?'<button class="b" id="resume">متابعة من حيث توقفت</button>':''}</p>
- <p style="font-size:.8rem;color:var(--mu)">⚠️ كل الأسماء والأرقام افتراضية لأغراض التدريب. تُقيَّم رسالتك الحرة بوكلاء المنصة (المقيّم ثم المدقق) حين تفتح المحاكاة من البوابة بعد تسجيل الدخول، وإلا بقواعد مبسّطة، وللتقييم النهائي المدرب. وتُرسل نتيجتك إلى المدرب تلقائياً.</p></div>`);
+ <p style="font-size:.8rem;color:var(--mu)">⚠️ كل الأسماء والأرقام افتراضية لأغراض التدريب. تُقيَّم رسالتك الحرة بوكلاء المنصة (المقيّم ثم المدقق) وإن تعذّر ذلك فبقواعد مبسّطة، وللتقييم النهائي المدرب. وتُرسل نتيجتك إلى المدرب تلقائياً.</p></div>`);
  $('go').onclick=()=>{S=init();S.name=($('nm').value||'متدرب').trim();S.mode=$('mode').value==='team'?'team':'solo';
   const c={college:cleanN($('clg').value),d1:cleanDept($('d1').value),d2:cleanDept($('d2').value),d3:cleanDept($('d3').value),course:cleanN($('crs').value)};
   if(c.college||c.d1||c.d2||c.d3||c.course){const cf={college:c.college||CFG0.college,d1:c.d1||CFG0.d1,d2:c.d2||CFG0.d2,d3:c.d3||CFG0.d3};cf.course=c.course||(c.d1?'مقرر '+c.d1:CFG0.course);S.cfg=cf;S.college=c.college;applyCfg(cf);retext(document.querySelector('.top'))}
   save();feed.innerHTML='';sideHTML();playEvent()};
  const r=$('resume');if(r)r.onclick=()=>{S=saved;if(S.cfg){applyCfg(S.cfg);retext(document.querySelector('.top'))}feed.innerHTML='';bubble('sys','استُؤنفت محاكاتك عند القرار '+(S.ev+1)+'.');sideHTML();playEvent()};
  if(location.hash==='#coach')coachPanel();
+ else call({action:'auth_check',tok:TOK()}).then(j=>{
+   if(j&&!j.ok&&(j.code==='SESSION_INVALID'||j.err==='unauth')){['odl_tok','odl_ph','odl_nm'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});startScreen()}
+   else if(j&&j.ok&&j.name){const n=$('nm');if(n){n.value=j.name;n.readOnly=true}}}).catch(()=>{});
  sideHTML()}
 function sayList(list,cb,i=0){if(i>=list.length)return cb&&cb();const [c,t0]=list[i];let t=typeof t0==='function'?t0():t0;
  if(t==='__DASH__')t=dashHTML();else if(t==='__PEMS__')t=pemsHTML();else if(t==='__REV__')t=revHTML();
