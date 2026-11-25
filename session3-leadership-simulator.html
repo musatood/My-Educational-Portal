@@ -71,12 +71,25 @@ let CFG=Object.assign({on:false},CFG0);
 const cleanN=v=>String(v||'').replace(/[<>&"\u0000-\u001f]/g,'').replace(/\s+/g,' ').trim().slice(0,60);
 const cleanDept=v=>cleanN(v).replace(/^(?:رئيس\s+)?قسم\s+/,'');
 function applyCfg(c){CFG=Object.assign({on:!!c},CFG0,c||{},{on:!!c})}
-function T(s){if(!CFG.on||typeof s!=='string')return s;
+function T_(s){if(!CFG.on||typeof s!=='string')return s;
  return s.replace(/كلية العلوم الإدارية والمحاسبة/g,'\u0001C').replace(/ \(كلية نموذجية\)/g,'')
   .replace(/مبادئ التسويق/g,'\u0001K').replace(/الإحصاء للإدارة/g,'\u0001B')
   .replace(/رئيس (?:قسم )?(التسويق|الإحصاء|الاحصاء|المحاسبة)/g,(m,a)=>'رئيس قسم \u0001'+(a==='التسويق'?'A':a==='المحاسبة'?'D':'B'))
   .replace(/التسويق/g,'\u0001A').replace(/الإحصاء|الاحصاء/g,'\u0001B').replace(/المحاسبة/g,'\u0001D')
   .replace(/\u0001C/g,()=>CFG.college).replace(/\u0001K/g,()=>CFG.course).replace(/\u0001A/g,()=>CFG.d1).replace(/\u0001B/g,()=>CFG.d2).replace(/\u0001D/g,()=>CFG.d3)}
+/* ======= أسماء المتحدثين: يُنادى العميد باسمه، ويُذكر رئيس القسم باسمه إن وُجد (يسري على النص وعلى الصوت) ======= */
+let PPL={dean:'',h1:'',h2:'',h3:''};
+const reEsc=v=>String(v).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+const cleanP=v=>cleanN(v).slice(0,40);
+function callName(full){return String(full||'').replace(/^\s*(?:أ\.\s*د\.?|الأستاذ\s+الدكتور|الدكتور|الدكتورة|دكتور|دكتورة|د\.|د\/|أ\.|الأستاذ|الأستاذة|أستاذ|أستاذة)\s*/,'').trim().split(/\s+/).filter(Boolean).slice(0,2).join(' ')}
+function applyPpl(p){PPL=Object.assign({dean:'',h1:'',h2:'',h3:''},p||{})}
+function P(s){if(typeof s!=='string')return s;
+ if(PPL.dean)s=s.replace(new RegExp('يا عميد(?!\\s+'+reEsc(PPL.dean)+')','g'),'يا عميد '+PPL.dean);
+ [[CFG.d1,PPL.h1],[CFG.d2,PPL.h2],[CFG.d3,PPL.h3]].forEach(x=>{if(x[0]&&x[1])s=s.replace(new RegExp('رئيس قسم '+reEsc(x[0])+'(?!\\s+'+reEsc(x[1])+')','g'),'رئيس قسم '+x[0]+' '+x[1])});
+ return s}
+function T(s){return P(T_(s))}
+const INTRO=new Set(),HEADK={mkt:'h1',sta:'h2',acc:'h3'};
+function introFor(c){const k=HEADK[c];if(!k||!PPL[k]||INTRO.has(c))return '';INTRO.add(c);return 'معك '+PPL[k]+'. '}
 const SEEN=new WeakSet();
 function retext(n){if(n.nodeType===3){if(!SEEN.has(n)){SEEN.add(n);const v=T(n.nodeValue);if(v!==n.nodeValue)n.nodeValue=v}}else if(n.nodeType===1&&!/^(SCRIPT|STYLE|TEXTAREA|INPUT|SELECT)$/.test(n.tagName)){n.childNodes.forEach(retext)}}
 new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(retext))).observe(document.body,{childList:true,subtree:true});
@@ -277,7 +290,7 @@ function coachPanel(){html(0,`<div class="cpanel noprint"><b>🎙️ وضع ال
 const feed=$('feed');
 function scrollEnd(){setTimeout(()=>window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'}),60)}
 function bubble(c,html,cls=''){const d=document.createElement('div');d.className='msg '+(cls||c);const vo=VOICED.includes(c);d.innerHTML=`<div class="av">${CH[c][1]}</div><div class="bub"><small>${CH[c][0]}${vo?' <button class="vb" title="استمع بصوت Fenrir" aria-label="استمع">🔊</button>':''}</small>${html}</div>`;feed.appendChild(d);scrollEnd();
- if(vo){const tx=plain(T(html)),vb=d.querySelector('.vb');if(vb)vb.onclick=()=>speak(c,tx,true);speak(c,tx)}return d}
+ if(vo){const tx=introFor(c)+plain(T(html)),vb=d.querySelector('.vb');if(vb)vb.onclick=()=>speak(c,tx,true);speak(c,tx)}return d}
 function html(el,h){const d=document.createElement('div');d.innerHTML=h;feed.appendChild(d);scrollEnd();return d}
 function sideHTML(){
  const e=EV[Math.min(S.ev,EV.length-1)],wk=S.wk,cp=Object.keys(COMP).map(k=>{const mx=EV.filter(x=>x.comp===k).reduce((a,x)=>a+x.parts.reduce((s,p)=>s+p.pts,0),0);return `<div class="kpi"><div class="r"><span>${COMP[k]}</span><b>${S.comp[k]}/${mx}</b></div><div class="bar"><i style="width:${mx?S.comp[k]/mx*100:0}%;background:var(--pr)"></i></div></div>`}).join('');
@@ -313,23 +326,28 @@ function startMain(authName){
  <p>بعد الجلسة الثانية صار عندك خطة من ثلاثة بنود. في هذه المحاكاة تتابع تنفيذها على مدى <b>أربعة أسابيع</b>: ترد على رؤساء الأقسام، تقرأ المؤشرات، ترفع أسئلة للمركز، تقرر أمام المجلس، وتبني روتينك القيادي.</p>
  <ul><li><b>12 قراراً</b> ونحو 100 نقطة: كل قرار يسجَّل لك فوراً مع شرح.</li><li><b>العالم يتفاعل:</b> رؤساء الأقسام يغضبون أو يتعاونون، والمؤشرات تتحرك، وأحداث لاحقة تتغير بحسب قراراتك السابقة.</li><li><b>التلميح</b> متاح في كل قرار، لكنه يخصم نقطة واحدة.</li></ul>
  <label>اسمك (لتُسجَّل نتيجتك):</label><input type="text" id="nm" placeholder="الاسم الكامل" value="${saved&&saved.name||nmDefault()}">
+ <label>الاسم الذي يناديك به المتحدثون في الأصوات (اتركه كما هو أو عدّله):</label><input type="text" id="cn" placeholder="مثال: أحمد حسن" value="${saved&&saved.ppl&&saved.ppl.dean||''}">
  <p style="margin:8px 0 2px"><b>اكتب أسماء كليتك وأقسامك</b> لتجري الحالة عليها (واتركها فارغة لتُجرى على الكلية النموذجية «العلوم الإدارية والمحاسبة»):</p>
  <label>اسم كليتك:</label><input type="text" id="clg" placeholder="مثال: كلية الاقتصاد والعلوم الإدارية" value="${saved&&saved.cfg&&saved.cfg.college||''}">
  <label>القسم الأول (فيه المقرر الحرج وتأخر المواد):</label><input type="text" id="d1" placeholder="مثال: التسويق" value="${saved&&saved.cfg&&saved.cfg.d1||''}">
+ <label>اسم رئيس هذا القسم (اختياري، يُنطق باسمه):</label><input type="text" id="h1" placeholder="مثال: دكتور خالد" value="${saved&&saved.ppl&&saved.ppl.h1||''}">
  <label>اسم المقرر الحرج في هذا القسم:</label><input type="text" id="crs" placeholder="مثال: مبادئ التسويق" value="${saved&&saved.cfg&&saved.cfg.course||''}">
  <label>القسم الثاني (امتحانه لا يطابق مخرجات مقرره):</label><input type="text" id="d2" placeholder="مثال: الإحصاء" value="${saved&&saved.cfg&&saved.cfg.d2||''}">
+ <label>اسم رئيس هذا القسم (اختياري، يُنطق باسمه):</label><input type="text" id="h2" placeholder="مثال: دكتور خالد" value="${saved&&saved.ppl&&saved.ppl.h2||''}">
  <label>القسم الثالث (عنده ملف الاعتماد):</label><input type="text" id="d3" placeholder="مثال: المحاسبة" value="${saved&&saved.cfg&&saved.cfg.d3||''}">
+ <label>اسم رئيس هذا القسم (اختياري، يُنطق باسمه):</label><input type="text" id="h3" placeholder="مثال: دكتور خالد" value="${saved&&saved.ppl&&saved.ppl.h3||''}">
  <label>طريقة التنفيذ:</label><select id="mode"><option value="solo">فردي: أقرر وحدي</option><option value="team"${saved&&saved.mode==='team'?' selected':''}>فريق: مع رؤساء أقسامي</option></select>
  <details style="margin:6px 0"><summary><b>كيف تُجرى المحاكاة مع رؤساء الأقسام؟</b></summary><ol style="margin:6px 0"><li>اكتب اسم كليتك وأسماء ثلاثة من أقسامك، فتجري الحالة على كليتك بأسماء أقسامها.</li><li>يجلس العميد أمام الجهاز، ويأخذ رؤساء الأقسام الثلاثة أدوارهم: الأول صاحب المقرر الحرج، والثاني صاحب الامتحان، والثالث صاحب ملف الاعتماد.</li><li>عند كل قرار يقرأ صاحب الدور كلام شخصيته، ثم يناقش الفريق دقيقة أو دقيقتين، ويقرر العميد.</li><li>في النهاية يملأ الفريق ورقة «طبّق على كليتك» بأرقام كليتهم الفعلية.</li></ol><p class="note">الأرقام والأحداث افتراضية، أما الأسماء فأسماؤكم. أصوات الشخصيات تُولَّد عند أول سماع (ثم تُحفظ) وتتحول إلى صوت المتصفح إن بلغ الحد اليومي.</p></details>
  <p style="display:flex;gap:8px;flex-wrap:wrap"><button class="b p" id="go">ابدأ المحاكاة ›</button>${saved&&!saved.done&&saved.ev>0?'<button class="b" id="resume">متابعة من حيث توقفت</button>':''}</p>
  <p style="font-size:.8rem;color:var(--mu)">⚠️ كل الأسماء والأرقام افتراضية لأغراض التدريب. تُقيَّم رسالتك الحرة بوكلاء المنصة (المقيّم ثم المدقق) وإن تعذّر ذلك فبقواعد مبسّطة، وللتقييم النهائي المدرب. وتُرسل نتيجتك إلى المدرب تلقائياً.</p></div>`);
- $('go').onclick=()=>{S=init();S.name=($('nm').value||'متدرب').trim();S.mode=$('mode').value==='team'?'team':'solo';
+ $('go').onclick=()=>{S=init();S.name=($('nm').value||'متدرب').trim();S.ppl={dean:cleanP($('cn').value)||cleanP(callName($('nm').value)),h1:cleanP($('h1').value),h2:cleanP($('h2').value),h3:cleanP($('h3').value)};applyPpl(S.ppl);INTRO.clear();S.mode=$('mode').value==='team'?'team':'solo';
   const c={college:cleanN($('clg').value),d1:cleanDept($('d1').value),d2:cleanDept($('d2').value),d3:cleanDept($('d3').value),course:cleanN($('crs').value)};
   if(c.college||c.d1||c.d2||c.d3||c.course){const cf={college:c.college||CFG0.college,d1:c.d1||CFG0.d1,d2:c.d2||CFG0.d2,d3:c.d3||CFG0.d3};cf.course=c.course||(c.d1?'مقرر '+c.d1:CFG0.course);S.cfg=cf;S.college=c.college;applyCfg(cf);retext(document.querySelector('.top'))}
   save();feed.innerHTML='';sideHTML();playEvent()};
- const r=$('resume');if(r)r.onclick=()=>{S=saved;if(S.cfg){applyCfg(S.cfg);retext(document.querySelector('.top'))}feed.innerHTML='';bubble('sys','استُؤنفت محاكاتك عند القرار '+(S.ev+1)+'.');sideHTML();playEvent()};
+ const r=$('resume');if(r)r.onclick=()=>{S=saved;applyPpl(S.ppl);INTRO.clear();if(S.cfg){applyCfg(S.cfg);retext(document.querySelector('.top'))}feed.innerHTML='';bubble('sys','استُؤنفت محاكاتك عند القرار '+(S.ev+1)+'.');sideHTML();playEvent()};
  if(location.hash==='#coach')coachPanel();
  if(authName){const n=$('nm');if(n){n.value=authName;n.readOnly=true}}
+ {const nE=$('nm'),cE=$('cn');if(nE&&cE){if(!cE.value)cE.value=callName(nE.value);nE.addEventListener('input',()=>{if(!cE.dataset.t)cE.value=callName(nE.value)});cE.addEventListener('input',()=>{cE.dataset.t=1})}}
  sideHTML()}
 function sayList(list,cb,i=0){if(i>=list.length)return cb&&cb();const [c,t0]=list[i];let t=typeof t0==='function'?t0():t0;
  if(t==='__DASH__')t=dashHTML();else if(t==='__PEMS__')t=pemsHTML();else if(t==='__REV__')t=revHTML();
