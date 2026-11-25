@@ -67,7 +67,7 @@ table.t{border-collapse:collapse;width:100%;font-size:.88rem}table.t th,table.t 
 <body>
 <div id="authgate"><div class="card"><div style="text-align:center;margin-bottom:12px"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIj48Y2lyY2xlIGN4PSIxMDAiIGN5PSIxMDAiIHI9Ijk2IiBmaWxsPSIjMEYyQTQ3Ii8+PGNpcmNsZSBjeD0iMTAwIiBjeT0iMTAwIiByPSI4NCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjQzI4QTFFIiBzdHJva2Utd2lkdGg9IjQiLz48cGF0aCBkPSJNNTIgMTE4aDk2djhINTJ6TTYwIDg2bDQwLTIyIDQwIDIydjEwSDYweiIgZmlsbD0iI0MyOEExRSIvPjxyZWN0IHg9IjcyIiB5PSI5OCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjZmZmIi8+PHJlY3QgeD0iOTUiIHk9Ijk4IiB3aWR0aD0iMTAiIGhlaWdodD0iMjAiIGZpbGw9IiNmZmYiLz48cmVjdCB4PSIxMTgiIHk9Ijk4IiB3aWR0aD0iMTAiIGhlaWdodD0iMjAiIGZpbGw9IiNmZmYiLz48dGV4dCB4PSIxMDAiIHk9IjE1OCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXdlaWdodD0iNzAwIiBmb250LXNpemU9IjMwIiBmaWxsPSIjZmZmIj5PVVM8L3RleHQ+PC9zdmc+" alt="شعار جامعة السودان المفتوحة" style="width:130px;height:130px;border-radius:50%;background:#fff;padding:4px;box-shadow:0 2px 12px rgba(0,0,0,.35)"><div id="ag_cohort" style="margin-top:8px;font-weight:700;color:var(--ac)">جامعة السودان المفتوحة<br>مركز تطوير التعليم</div></div><h2>🔐 الدخول إلى الحقيبة التدريبية</h2>
 <div style="display:flex;gap:8px;margin-bottom:12px"><button class="b" id="ag_t1" onclick="agTab(1)">👤 دخول متدرب</button><button class="b s" id="ag_t2" onclick="agTab(2)">🎓 دخول مدرب</button></div>
-<div id="ag_trainee"><div id="ag_resume" style="display:none;margin-bottom:14px"><button class="b" id="ag_resume_btn" onclick="agResume()" style="width:100%"></button><p class="note" style="margin-top:6px">دون رمز جديد، ما دام حسابك مسجلاً. <a href="#" onclick="agForget();return false">لست أنت / جهاز مشترك؟ احذف الحساب من هذا الجهاز</a></p></div><div id="ag_step1"><label>رقم الواتساب مع رمز الدولة (مثال: 249912345678)</label><input type="tel" id="ag_ph" inputmode="tel" dir="ltr"><button class="b" onclick="agRequest()">طلب رمز التحقق</button><p class="note">يصلك الرمز على واتساب من المدرب بعد تأكيد رقمك المسجّل.</p></div>
+<div id="ag_trainee"><div id="ag_step1"><label>رقم الواتساب مع رمز الدولة (مثال: 249912345678)</label><input type="tel" id="ag_ph" inputmode="tel" dir="ltr"><button class="b" onclick="agRequest()">طلب رمز التحقق</button><p class="note">يصلك الرمز على واتساب من المدرب بعد تأكيد رقمك المسجّل.</p></div>
 <div id="ag_step2"><p class="note">أدخل الرمز المكوّن من 6 أرقام الذي وصلك على واتساب (صالح 15 دقيقة).</p><input type="text" id="ag_code" inputmode="numeric" maxlength="6" dir="ltr" placeholder="------"><button class="b" onclick="agVerify()">تحقق ودخول</button> <button class="b s" onclick="agBack()">تغيير الرقم</button></div></div>
 <div id="ag_trainer" style="display:none"><label>رمز المدرب</label><input type="password" id="ag_pin" dir="ltr"><button class="b" onclick="agTrainer()">دخول المدرب</button></div>
 <div id="ag_msg" class="fb"></div></div></div>
@@ -77,31 +77,16 @@ table.t{border-collapse:collapse;width:100%;font-size:.88rem}table.t th,table.t 
 <nav id="nav">
 <button data-t="explain" class="on">📖 الشرح</button>
 <button data-t="board">🎞️ السبورة</button>
-<button data-t="sims">🧭 المحاكاة</button>
 <button data-t="review">🔁 المراجعة</button>
 <button data-t="exam">📝 الاختبار</button>
 <button data-t="project">🛠️ المشروع</button>
 <button data-t="myfb">📈 تغذيتي الراجعة<span id="mfdot" style="display:none;width:9px;height:9px;border-radius:50%;background:#ff5252;margin-right:6px;vertical-align:middle"></span></button>
-<button data-t="agents">🤖 الوكلاء</button> <button data-t="survey">📋 الاستبيان</button> <button data-t="trainer">🎓 لوحة المدرب</button>
+<button data-t="agents">🤖 الوكلاء</button> <button data-t="trainer">🎓 لوحة المدرب</button>
 </nav>
 </header>
 <div id="nbar" style="display:none;background:var(--ac);color:#fff;padding:10px 16px;text-align:center;font-weight:700"></div>
 <div id="trk_me" style="display:none"></div>
 <main>
-<!-- المحاكاة والجولات التفاعلية -->
-<div id="sims" class="tab" style="display:none">
-<div class="card"><h2>🧭 المحاكاة والجولات التفاعلية</h2>
-<p class="note" id="sims_file" style="display:none;color:var(--no)">⚠️ أنت تفتح الحقيبة من ملف على جهازك، فلن تعمل المحاكاة والجولات كاملة. افتحها من رابط الموقع على الإنترنت.</p>
-<div style="border:1px solid var(--bd);border-radius:12px;padding:12px 14px;margin:10px 0">
-<b>🧭 محاكاة الجلسة الثالثة: المتابعة الاستراتيجية والروتين القيادي</b>
-<p class="note">تعمل عميداً لكليتك على مدى أربعة أسابيع: ترد على رؤساء أقسامك، وتقرأ المؤشرات، وترفع سؤالاً للمركز، وتقرر أمام المجلس، وتبني روتينك. اكتب في البداية اسم كليتك وأسماء ثلاثة من أقسامك والمقرر الحرج، وتستطيع تنفيذها وحدك أو مع رؤساء أقسامك. تحتاج تسجيل الدخول برقم واتساب أولاً، وتصل نتيجتك للمدرب.</p>
-<a class="b p" href="session3-leadership-simulator.html" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block">ابدأ المحاكاة ›</a></div>
-<div style="border:1px solid var(--bd);border-radius:12px;padding:12px 14px;margin:10px 0">
-<b>🗺️ الجولة التفاعلية على منصة الحقيبة (الجلسة الأولى)</b>
-<p class="note">جولة تطبيقية تعرّفك بالبوابة وأنظمتها خطوة بخطوة.</p>
-<a class="b" href="session1-platform-tour.html" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block">افتح الجولة ›</a></div>
-<div style="border:1px solid var(--bd);border-radius:12px;padding:12px 14px;margin:10px 0"> <b>🗺️ جولة تفاعلية إضافية على البوابة</b> <p class="note">جولة تطبيقية ثانية تكمل جولة الجلسة الأولى.</p> <a class="b" href="portal-cs-college-tour.html" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block">افتح الجولة ›</a></div>
-</div></div>
 <!-- الوكلاء الذكيون -->
 <div id="agents" class="tab" style="display:none">
 <div class="card"><h2>🤖 الوكلاء الذكيون</h2>
@@ -138,7 +123,7 @@ table.t{border-collapse:collapse;width:100%;font-size:.88rem}table.t th,table.t 
 </div>
 <div class="layout">
 <div class="card toc" id="toc"></div>
-<div class="card" id="units"><section class="unit" data-title="مقدمة البرنامج"><h3>الحقيبة التدريبية المتكاملة للعمداء: الاستخدام الأمثل للبوابة الموحدة لأنظمة مركز تطوير التعليم</h3><p>الفكرة الأساسية: الدورة ليست شرحاً لأزرار النظام، بل تدريب على عادة قيادية: أن يفتح العميد البوابة 15 دقيقة أسبوعياً، فيقرأ المؤشرات، ويحدد ما يحتاج قراراً، ويتحرك. كل جلسة تنتهي بمخرج عملي ينفّذه العميد على حسابه الفعلي.</p><h3>أولاً: بطاقة البرنامج</h3><table><tr><td>الفئة المستهدفة</td><td>عمداء الكليات (ويمكن ضم رؤساء الأقسام في الجلسة الثالثة)</td></tr><tr><td>المدة</td><td>3 جلسات × 90 دقيقة + جلسة متابعة بعد أسبوعين (45 دقيقة)</td></tr><tr><td>حجم المجموعة</td><td>8 – 12 مشاركاً لكل مدرب، لكل مشارك جهاز بحسابه الفعلي</td></tr><tr><td>المتطلبات المسبقة</td><td>حساب فعّال بدور «عميد»، اتصال بالإنترنت، وبيانات تجريبية مُدخلة</td></tr><tr><td>طريقة التنفيذ</td><td>25% عرض و75% تطبيق مباشر على النظام وسيناريوهات قرار</td></tr></table><h3>ثانياً: مخرجات التعلم</h3><p>بنهاية الدورة يكون العميد قادراً على أن:</p><ol><li>يدخل البوابة بحسابه ويتنقل بين الأنظمة العشرة ويحدد أيّها يجيب عن أي سؤال إداري.</li><li>يقرأ اللوحة الموحدة ويميّز المؤشر الذي يحتاج تدخلاً عن الذي يمكن تجاهله.</li><li>يفسّر تصنيف المقرر في بطاقة صحة المقرر (سليم / يحتاج تحسين / حرج) ويحوّله إلى إجراء محدد.</li><li>يقرأ مؤشرات CQIS الأربعة (AQI وDPI وAPI وCHI) ويربطها بقرار أكاديمي.</li><li>يتابع تقرير الخطة التشغيلية الشهرية للمركز في وضع الاطّلاع ويستخرج ما يخص كليته.</li><li>يصدّر تقريراً شهرياً بالصيغة المناسبة ويشاركه ويحافظ على أمان حسابه.</li></ol><h3>ثالثاً: جدول الدورة</h3><table><tr><th>الجلسة</th><th>العنوان</th><th>المخرج العملي</th></tr><tr><td>1</td><td>خريطة البوابة والدخول الآمن وقراءة اللوحة الموحدة</td><td>أهم 3 أسئلة أريدها من البوابة أسبوعياً</td></tr><tr><td>2</td><td>من المؤشر إلى القرار: ECHCS وCQIS وISSS وAIMS وCAMS</td><td>قائمة إجراءات من 3 بنود على مقررات كليتي</td></tr><tr><td>3</td><td>المتابعة الاستراتيجية والتقارير والروتين القيادي</td><td>روتين مكتوب ومجدول في التقويم</td></tr><tr><td>متابعة</td><td>مراجعة التطبيق بعد أسبوعين</td><td>عرض ما تغيّر في الكلية</td></tr></table></section><section class="unit" data-title="الأولى: خريطة البوابة والدخول الآمن"><h3>الجلسة الأولى: خريطة البوابة والدخول الآمن (90 دقيقة)</h3><p>الهدف: أن يعرف العميد ماذا تحتوي البوابة وماذا يستطيع وما لا يستطيع.</p><h3>الأنظمة العشرة مجمّعة حسب السؤال الذي تجيب عنه</h3><table><tr><th>السؤال الذي أحتاجه</th><th>النظام</th></tr><tr><td>هل مقرراتي بصحة جيدة؟</td><td>ECHCS وCQIS</td></tr><tr><td>هل برامجي ومخرجات تعلمها موثّقة ومعتمدة؟</td><td>CDAS وCAMS</td></tr><tr><td>كيف يقيّم الطلاب والعاملون الأداء؟</td><td>ISSS</td></tr><tr><td>أين وصلت مراجعة المقررات وتطويرها؟</td><td>AIMS وEDUS</td></tr><tr><td>هل خطة مركز التطوير تسير في موعدها؟</td><td>EDC-PEMS</td></tr><tr><td>الصورة الكلية في شاشة واحدة؟</td><td>لوحة معلومات النظام</td></tr></table><p><b>تنبيه مهم:</b> اللوحة تتحدث تلقائياً كل دقيقة. وإن ظهرت قيم صفرية فالمعنى غالباً أن الإدخال لم يبدأ في تلك الكلية، لا أن النظام معطّل.</p><h3>الدخول والصلاحيات</h3><ul><li>دور العميد يرى نطاق كليته فقط.</li><li>بعض الصلاحيات «اطّلاع فقط» لحماية سلامة البيانات.</li><li>لا تشارك كلمة المرور؛ وللسكرتارية يُستخدم تفويض رسمي.</li></ul><h3>تطبيق موجّه على اللوحة الموحدة</h3><p>افتح اللوحة وأجب:</p><ul><li>أين مؤشر صحة المقررات؟</li><li>كم عدد الاستبيانات المجابة؟</li><li>متى آخر تحديث؟</li><li>ما الذي لا يزال «غير مربوط»؟</li></ul><h3>المخرج العملي</h3><p>اكتب «أهم 3 أسئلة أريد أن تجيب عنها البوابة كل أسبوع».</p></section><section class="unit" data-title="الثانية: من المؤشر إلى القرار"><h3>الجلسة الثانية: من المؤشر إلى القرار (90 دقيقة)</h3><p>القاعدة: اقرأ ← فسّر ← قرّر ← كلّف ← تابع.</p><h3>بطاقة صحة المقرر (ECHCS)</h3><table><tr><th>التصنيف</th><th>الإجراء</th></tr><tr><td>🟢 سليم</td><td>لا إجراء سوى المتابعة الدورية.</td></tr><tr><td>🟡 يحتاج تحسين</td><td>يُكلَّف رئيس القسم بخطة تحسين ويُحدَّد موعد.</td></tr><tr><td>🔴 حرج</td><td>يُرفع للقرار الفوري: تدخل العميد أو لجنة مراجعة أو إعادة تصميم.</td></tr></table><h3>مؤشرات CQIS الأربعة</h3><table><tr><th>المؤشر</th><th>ماذا يقيس</th><th>سؤال العميد عند انخفاضه</th></tr><tr><td>AQI</td><td>معلومات المقرر ومحتواه</td><td>هل المحتوى مكتمل ومحدّث؟ من المسؤول؟</td></tr><tr><td>DPI</td><td>المواد الصوتية والبصرية وأداء الأستاذ</td><td>هل المشكلة في الإنتاج أم في التقديم؟</td></tr><tr><td>API</td><td>الأداء الأكاديمي للطلاب (يُحسب تلقائياً)</td><td>هل الانخفاض في التقويم أم في فهم المحتوى؟</td></tr><tr><td>CHI</td><td>صحة المقرر الاستراتيجية (المركّب الأهم)</td><td>أي المؤشرات الثلاثة يسحبه للأسفل؟</td></tr></table><p><b>قاعدة التشخيص:</b> لا تعالج CHI مباشرة؛ اذهب إلى المؤشر الفرعي الأضعف فهو سبب الانخفاض.</p><h3>ISSS وAIMS وCAMS</h3><ul><li>ISSS: اختر الاستبانة، صفِّ حسب كليتك، وانظر نسبة الاستجابة قبل أن تثق بالنتيجة؛ نتيجة من استجابة ضعيفة لا تُبنى عليها قرارات.</li><li>AIMS: تابع حالة مراجعة المقررات (معتمد / تعديل جزئي / موصى بحذفه).</li><li>CAMS وCDAS: اطلب تقرير أهداف ومخرجات البرنامج المعتمد من رئيس القسم قبل أي زيارة اعتماد.</li></ul><h3>المخرج العملي</h3><p>«قائمة إجراءات من 3 بنود» لكليتك، كل بند: ماذا؟ من؟ متى؟</p></section><section class="unit" data-title="الثالثة: المتابعة الاستراتيجية والروتين القيادي"><h3>الجلسة الثالثة: المتابعة الاستراتيجية والروتين القيادي (90 دقيقة)</h3><div class="note" style="border:2px solid var(--ac);border-radius:12px;padding:10px 14px;margin:10px 0">🧭 <b>تنبيه:</b> الحالة في هذه المحاكاة أُعدّت أصلاً على <b>كلية نموذجية هي «العلوم الإدارية والمحاسبة»</b>، <b>ويكتب كل عميد اسم كليته وأسماء ثلاثة من أقسامه والمقرر الحرج</b> في شاشة البداية فتجري الحالة على كليته وأقسامها. الأرقام والأحداث افتراضية، والغرض تدريب العميد على منهج القراءة والتشخيص والقرار والمتابعة.<br><a class="b" href="session3-leadership-simulator.html" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block;margin-top:8px">🧭 ابدأ محاكاة الجلسة الثالثة</a> <small>(سجّل الدخول إلى الحقيبة أولاً ليُحفظ تقدمك وتصل نتيجتك للمدرب)</small><br><b>للتنفيذ مع رؤساء الأقسام:</b> يختار العميد «فريق» في شاشة البداية، ويأخذ رؤساء الأقسام الثلاثة المكتوبة أسماؤها أدوارهم (الأول صاحب المقرر الحرج، والثاني صاحب الامتحان، والثالث صاحب ملف الاعتماد)، ويناقش الفريق كل قرار قبل أن يختار العميد، ثم يطبّقون الأسئلة الختامية على كليتهم الفعلية.</div><h3>تقرير الخطة التشغيلية الشهرية (EDC-PEMS)</h3><ul><li>يعرض أنشطة المركز الشهرية مع الهدف والقياس الفعلي ونسبة التحقق (أخضر: متحقق، أصفر: جيد، برتقالي: ضعيف، أحمر: متأخر).</li><li>العميد في وضع اطّلاع فقط: يقرأ ولا يعدّل، فلا خوف على سلامة البيانات.</li><li>ابحث عن نشاطين يمسّان كليتك: هل حققا هدفهما؟ وما الذي تحتاجه الكلية من المركز؟</li><li>النشاط الأحمر أو الذي بلا قياس يُرفع بسؤال محدد إلى المركز، لا بملاحظة عامة.</li></ul><h3>التقارير والتصدير</h3><ul><li>يمكن تصدير تقرير شهري بصيغ Word وPDF وPowerPoint وHTML أو مشاركته مباشرة.</li><li>PDF للأرشفة والمجالس، وPowerPoint للعرض، وWord إذا ستحرّر فيه، ورابط/HTML للمتابعة الحيّة.</li><li>بعد التصدير تأكد أن أرقامه تطابق الشاشة.</li></ul><h3>بناء روتين العميد</h3><table><tr><th>التكرار</th><th>المهمة</th><th>المدة</th></tr><tr><td>أسبوعياً</td><td>فتح اللوحة الموحدة وقراءة التغيرات وتحديد بند يحتاج قراراً</td><td>15 د</td></tr><tr><td>أسبوعياً</td><td>مراجعة المقررات الحرجة الجديدة وتكليف المسؤول</td><td>10 د</td></tr><tr><td>شهرياً</td><td>قراءة تقرير الخطة التشغيلية وتسجيل مطالب الكلية</td><td>20 د</td></tr><tr><td>فصلياً</td><td>تصدير تقرير شامل وعرضه في مجلس الكلية</td><td>30 د</td></tr></table><p>اكتب روتينك وضعه في تقويمك خلال الجلسة نفسها.</p></section><section class="unit" data-title="سيناريوهات تطبيقية"><h3>سيناريوهات تطبيقية (للعمل في مجموعات)</h3><table><tr><th>السيناريو</th><th>الوصف</th><th>الإجابة المتوقعة</th></tr><tr><td>1 — مقرر حرج</td><td>مقرر أساسي ظهر حرجاً، وCHI منخفض، وAPI جيد لكن DPI ضعيف.</td><td>المشكلة في الإنتاج أو التقديم لا في الطلاب؛ يُكلَّف رئيس القسم والأستاذ بتحسين المواد، وتُحدَّد مراجعة بعد شهر.</td></tr><tr><td>2 — استبانة بنتيجة مفاجئة</td><td>نتيجة سلبية حادة لكن عدد المستجيبين قليل جداً.</td><td>لا قرار الآن؛ يُرفع عدد الاستجابات أولاً ثم تُعاد القراءة.</td></tr><tr><td>3 — اعتماد قريب</td><td>زيارة اعتماد لبرنامج بعد 6 أسابيع.</td><td>تقرير أهداف ومخرجات البرنامج من CAMS وCDAS معتمداً من رئيس القسم، وتقرير صحة مقررات البرنامج.</td></tr><tr><td>4 — تأخر نشاط في المركز</td><td>نشاط يخص كليتك أحمر في تقرير الخطة التشغيلية.</td><td>سؤال محدد للمركز عن سبب التأخر وموعد الاستدراك، مع توثيقه.</td></tr></table></section><section class="unit" data-title="البطاقة المرجعية ودليل المدرب"><h3>بطاقة مرجعية سريعة (تُطبع للعميد)</h3><ul><li>لصورة كلية: لوحة معلومات النظام.</li><li>لمقرر مشكوك فيه: ECHCS ثم CQIS (ابدأ بالمؤشر الفرعي الأضعف).</li><li>لرأي الطلاب والعاملين: ISSS (انظر نسبة الاستجابة أولاً).</li><li>للاعتماد: CAMS وCDAS.</li><li>لخطة المركز: تقرير الخطة التشغيلية الشهرية (اطّلاع فقط).</li><li>قاعدة القرار: اقرأ ← فسّر ← قرّر ← كلّف ← تابع.</li><li>أمان الحساب: لا تشارك كلمة المرور، سجّل الخروج من الأجهزة المشتركة، وبلّغ المدير عند أي نشاط مريب.</li></ul><h3>دليل المدرب: أخطاء شائعة يجب استباقها</h3><table><tr><th>الخطأ</th><th>العلاج</th></tr><tr><td>اعتبار الأصفار عطلاً في النظام</td><td>شرح أن الإدخال لم يبدأ بعد</td></tr><tr><td>الوثوق بنتيجة استبانة قليلة الاستجابة</td><td>قاعدة «انظر نسبة الاستجابة أولاً»</td></tr><tr><td>معالجة CHI مباشرة</td><td>قاعدة «ابدأ بالمؤشر الفرعي الأضعف»</td></tr><tr><td>محاولة تعديل تقرير المركز</td><td>التوضيح أن الاطّلاع فقط مقصود لحماية البيانات</td></tr><tr><td>مشاركة الحساب مع السكرتارية</td><td>نقاش الأمان وتفويض رسمي بدلاً من ذلك</td></tr></table><p>قبل الدورة بأسبوع: تأكد أن لكل مشارك حساباً فعّالاً بدور «عميد»، وأدخل بيانات تجريبية واقعية (مقررات بحالات مختلفة، واستبانات بعدد استجابات متفاوت، وتقرير شهري بأنشطة متحققة ومتأخرة)، وجهّز مجموعة دعم. أثناء الدورة: ابدأ بسؤال القرار لا بشرح الواجهة، ولا تزد العرض المتواصل عن 7 دقائق دون تمرين. أسماء الأزرار قد تتغير مع تطوير النظام؛ راجع الواجهة الحية قبل الجلسة.</p></section>
+<div class="card" id="units"><section class="unit" data-title="مقدمة البرنامج"><h3>الحقيبة التدريبية المتكاملة للعمداء: الاستخدام الأمثل للبوابة الموحدة لأنظمة مركز تطوير التعليم</h3><p>الفكرة الأساسية: الدورة ليست شرحاً لأزرار النظام، بل تدريب على عادة قيادية: أن يفتح العميد البوابة 15 دقيقة أسبوعياً، فيقرأ المؤشرات، ويحدد ما يحتاج قراراً، ويتحرك. كل جلسة تنتهي بمخرج عملي ينفّذه العميد على حسابه الفعلي.</p><h3>أولاً: بطاقة البرنامج</h3><table><tr><td>الفئة المستهدفة</td><td>عمداء الكليات (ويمكن ضم رؤساء الأقسام في الجلسة الثالثة)</td></tr><tr><td>المدة</td><td>3 جلسات × 90 دقيقة + جلسة متابعة بعد أسبوعين (45 دقيقة)</td></tr><tr><td>حجم المجموعة</td><td>8 – 12 مشاركاً لكل مدرب، لكل مشارك جهاز بحسابه الفعلي</td></tr><tr><td>المتطلبات المسبقة</td><td>حساب فعّال بدور «عميد»، اتصال بالإنترنت، وبيانات تجريبية مُدخلة</td></tr><tr><td>طريقة التنفيذ</td><td>25% عرض و75% تطبيق مباشر على النظام وسيناريوهات قرار</td></tr></table><h3>ثانياً: مخرجات التعلم</h3><p>بنهاية الدورة يكون العميد قادراً على أن:</p><ol><li>يدخل البوابة بحسابه ويتنقل بين الأنظمة العشرة ويحدد أيّها يجيب عن أي سؤال إداري.</li><li>يقرأ اللوحة الموحدة ويميّز المؤشر الذي يحتاج تدخلاً عن الذي يمكن تجاهله.</li><li>يفسّر تصنيف المقرر في بطاقة صحة المقرر (سليم / يحتاج تحسين / حرج) ويحوّله إلى إجراء محدد.</li><li>يقرأ مؤشرات CQIS الأربعة (AQI وDPI وAPI وCHI) ويربطها بقرار أكاديمي.</li><li>يتابع تقرير الخطة التشغيلية الشهرية للمركز في وضع الاطّلاع ويستخرج ما يخص كليته.</li><li>يصدّر تقريراً شهرياً بالصيغة المناسبة ويشاركه ويحافظ على أمان حسابه.</li></ol><h3>ثالثاً: جدول الدورة</h3><table><tr><th>الجلسة</th><th>العنوان</th><th>المخرج العملي</th></tr><tr><td>1</td><td>خريطة البوابة والدخول الآمن وقراءة اللوحة الموحدة</td><td>أهم 3 أسئلة أريدها من البوابة أسبوعياً</td></tr><tr><td>2</td><td>من المؤشر إلى القرار: ECHCS وCQIS وISSS وAIMS وCAMS</td><td>قائمة إجراءات من 3 بنود على مقررات كليتي</td></tr><tr><td>3</td><td>المتابعة الاستراتيجية والتقارير والروتين القيادي</td><td>روتين مكتوب ومجدول في التقويم</td></tr><tr><td>متابعة</td><td>مراجعة التطبيق بعد أسبوعين</td><td>عرض ما تغيّر في الكلية</td></tr></table></section><section class="unit" data-title="الأولى: خريطة البوابة والدخول الآمن"><h3>الجلسة الأولى: خريطة البوابة والدخول الآمن (90 دقيقة)</h3><p>الهدف: أن يعرف العميد ماذا تحتوي البوابة وماذا يستطيع وما لا يستطيع.</p><h3>الأنظمة العشرة مجمّعة حسب السؤال الذي تجيب عنه</h3><table><tr><th>السؤال الذي أحتاجه</th><th>النظام</th></tr><tr><td>هل مقرراتي بصحة جيدة؟</td><td>ECHCS وCQIS</td></tr><tr><td>هل برامجي ومخرجات تعلمها موثّقة ومعتمدة؟</td><td>CDAS وCAMS</td></tr><tr><td>كيف يقيّم الطلاب والعاملون الأداء؟</td><td>ISSS</td></tr><tr><td>أين وصلت مراجعة المقررات وتطويرها؟</td><td>AIMS وEDUS</td></tr><tr><td>هل خطة مركز التطوير تسير في موعدها؟</td><td>EDC-PEMS</td></tr><tr><td>الصورة الكلية في شاشة واحدة؟</td><td>لوحة معلومات النظام</td></tr></table><p><b>تنبيه مهم:</b> اللوحة تتحدث تلقائياً كل دقيقة. وإن ظهرت قيم صفرية فالمعنى غالباً أن الإدخال لم يبدأ في تلك الكلية، لا أن النظام معطّل.</p><h3>الدخول والصلاحيات</h3><ul><li>دور العميد يرى نطاق كليته فقط.</li><li>بعض الصلاحيات «اطّلاع فقط» لحماية سلامة البيانات.</li><li>لا تشارك كلمة المرور؛ وللسكرتارية يُستخدم تفويض رسمي.</li></ul><h3>تطبيق موجّه على اللوحة الموحدة</h3><p>افتح اللوحة وأجب:</p><ul><li>أين مؤشر صحة المقررات؟</li><li>كم عدد الاستبيانات المجابة؟</li><li>متى آخر تحديث؟</li><li>ما الذي لا يزال «غير مربوط»؟</li></ul><h3>المخرج العملي</h3><p>اكتب «أهم 3 أسئلة أريد أن تجيب عنها البوابة كل أسبوع».</p></section><section class="unit" data-title="الثانية: من المؤشر إلى القرار"><h3>الجلسة الثانية: من المؤشر إلى القرار (90 دقيقة)</h3><p>القاعدة: اقرأ ← فسّر ← قرّر ← كلّف ← تابع.</p><h3>بطاقة صحة المقرر (ECHCS)</h3><table><tr><th>التصنيف</th><th>الإجراء</th></tr><tr><td>🟢 سليم</td><td>لا إجراء سوى المتابعة الدورية.</td></tr><tr><td>🟡 يحتاج تحسين</td><td>يُكلَّف رئيس القسم بخطة تحسين ويُحدَّد موعد.</td></tr><tr><td>🔴 حرج</td><td>يُرفع للقرار الفوري: تدخل العميد أو لجنة مراجعة أو إعادة تصميم.</td></tr></table><h3>مؤشرات CQIS الأربعة</h3><table><tr><th>المؤشر</th><th>ماذا يقيس</th><th>سؤال العميد عند انخفاضه</th></tr><tr><td>AQI</td><td>معلومات المقرر ومحتواه</td><td>هل المحتوى مكتمل ومحدّث؟ من المسؤول؟</td></tr><tr><td>DPI</td><td>المواد الصوتية والبصرية وأداء الأستاذ</td><td>هل المشكلة في الإنتاج أم في التقديم؟</td></tr><tr><td>API</td><td>الأداء الأكاديمي للطلاب (يُحسب تلقائياً)</td><td>هل الانخفاض في التقويم أم في فهم المحتوى؟</td></tr><tr><td>CHI</td><td>صحة المقرر الاستراتيجية (المركّب الأهم)</td><td>أي المؤشرات الثلاثة يسحبه للأسفل؟</td></tr></table><p><b>قاعدة التشخيص:</b> لا تعالج CHI مباشرة؛ اذهب إلى المؤشر الفرعي الأضعف فهو سبب الانخفاض.</p><h3>ISSS وAIMS وCAMS</h3><ul><li>ISSS: اختر الاستبانة، صفِّ حسب كليتك، وانظر نسبة الاستجابة قبل أن تثق بالنتيجة؛ نتيجة من استجابة ضعيفة لا تُبنى عليها قرارات.</li><li>AIMS: تابع حالة مراجعة المقررات (معتمد / تعديل جزئي / موصى بحذفه).</li><li>CAMS وCDAS: اطلب تقرير أهداف ومخرجات البرنامج المعتمد من رئيس القسم قبل أي زيارة اعتماد.</li></ul><h3>المخرج العملي</h3><p>«قائمة إجراءات من 3 بنود» لكليتك، كل بند: ماذا؟ من؟ متى؟</p></section><section class="unit" data-title="الثالثة: المتابعة الاستراتيجية والروتين القيادي"><h3>الجلسة الثالثة: المتابعة الاستراتيجية والروتين القيادي (90 دقيقة)</h3><h3>تقرير الخطة التشغيلية الشهرية (EDC-PEMS)</h3><ul><li>يعرض أنشطة المركز الشهرية مع الهدف والقياس الفعلي ونسبة التحقق (أخضر: متحقق، أصفر: جيد، برتقالي: ضعيف، أحمر: متأخر).</li><li>العميد في وضع اطّلاع فقط: يقرأ ولا يعدّل، فلا خوف على سلامة البيانات.</li><li>ابحث عن نشاطين يمسّان كليتك: هل حققا هدفهما؟ وما الذي تحتاجه الكلية من المركز؟</li><li>النشاط الأحمر أو الذي بلا قياس يُرفع بسؤال محدد إلى المركز، لا بملاحظة عامة.</li></ul><h3>التقارير والتصدير</h3><ul><li>يمكن تصدير تقرير شهري بصيغ Word وPDF وPowerPoint وHTML أو مشاركته مباشرة.</li><li>PDF للأرشفة والمجالس، وPowerPoint للعرض، وWord إذا ستحرّر فيه، ورابط/HTML للمتابعة الحيّة.</li><li>بعد التصدير تأكد أن أرقامه تطابق الشاشة.</li></ul><h3>بناء روتين العميد</h3><table><tr><th>التكرار</th><th>المهمة</th><th>المدة</th></tr><tr><td>أسبوعياً</td><td>فتح اللوحة الموحدة وقراءة التغيرات وتحديد بند يحتاج قراراً</td><td>15 د</td></tr><tr><td>أسبوعياً</td><td>مراجعة المقررات الحرجة الجديدة وتكليف المسؤول</td><td>10 د</td></tr><tr><td>شهرياً</td><td>قراءة تقرير الخطة التشغيلية وتسجيل مطالب الكلية</td><td>20 د</td></tr><tr><td>فصلياً</td><td>تصدير تقرير شامل وعرضه في مجلس الكلية</td><td>30 د</td></tr></table><p>اكتب روتينك وضعه في تقويمك خلال الجلسة نفسها.</p></section><section class="unit" data-title="سيناريوهات تطبيقية"><h3>سيناريوهات تطبيقية (للعمل في مجموعات)</h3><table><tr><th>السيناريو</th><th>الوصف</th><th>الإجابة المتوقعة</th></tr><tr><td>1 — مقرر حرج</td><td>مقرر أساسي ظهر حرجاً، وCHI منخفض، وAPI جيد لكن DPI ضعيف.</td><td>المشكلة في الإنتاج أو التقديم لا في الطلاب؛ يُكلَّف رئيس القسم والأستاذ بتحسين المواد، وتُحدَّد مراجعة بعد شهر.</td></tr><tr><td>2 — استبانة بنتيجة مفاجئة</td><td>نتيجة سلبية حادة لكن عدد المستجيبين قليل جداً.</td><td>لا قرار الآن؛ يُرفع عدد الاستجابات أولاً ثم تُعاد القراءة.</td></tr><tr><td>3 — اعتماد قريب</td><td>زيارة اعتماد لبرنامج بعد 6 أسابيع.</td><td>تقرير أهداف ومخرجات البرنامج من CAMS وCDAS معتمداً من رئيس القسم، وتقرير صحة مقررات البرنامج.</td></tr><tr><td>4 — تأخر نشاط في المركز</td><td>نشاط يخص كليتك أحمر في تقرير الخطة التشغيلية.</td><td>سؤال محدد للمركز عن سبب التأخر وموعد الاستدراك، مع توثيقه.</td></tr></table></section><section class="unit" data-title="البطاقة المرجعية ودليل المدرب"><h3>بطاقة مرجعية سريعة (تُطبع للعميد)</h3><ul><li>لصورة كلية: لوحة معلومات النظام.</li><li>لمقرر مشكوك فيه: ECHCS ثم CQIS (ابدأ بالمؤشر الفرعي الأضعف).</li><li>لرأي الطلاب والعاملين: ISSS (انظر نسبة الاستجابة أولاً).</li><li>للاعتماد: CAMS وCDAS.</li><li>لخطة المركز: تقرير الخطة التشغيلية الشهرية (اطّلاع فقط).</li><li>قاعدة القرار: اقرأ ← فسّر ← قرّر ← كلّف ← تابع.</li><li>أمان الحساب: لا تشارك كلمة المرور، سجّل الخروج من الأجهزة المشتركة، وبلّغ المدير عند أي نشاط مريب.</li></ul><h3>دليل المدرب: أخطاء شائعة يجب استباقها</h3><table><tr><th>الخطأ</th><th>العلاج</th></tr><tr><td>اعتبار الأصفار عطلاً في النظام</td><td>شرح أن الإدخال لم يبدأ بعد</td></tr><tr><td>الوثوق بنتيجة استبانة قليلة الاستجابة</td><td>قاعدة «انظر نسبة الاستجابة أولاً»</td></tr><tr><td>معالجة CHI مباشرة</td><td>قاعدة «ابدأ بالمؤشر الفرعي الأضعف»</td></tr><tr><td>محاولة تعديل تقرير المركز</td><td>التوضيح أن الاطّلاع فقط مقصود لحماية البيانات</td></tr><tr><td>مشاركة الحساب مع السكرتارية</td><td>نقاش الأمان وتفويض رسمي بدلاً من ذلك</td></tr></table><p>قبل الدورة بأسبوع: تأكد أن لكل مشارك حساباً فعّالاً بدور «عميد»، وأدخل بيانات تجريبية واقعية (مقررات بحالات مختلفة، واستبانات بعدد استجابات متفاوت، وتقرير شهري بأنشطة متحققة ومتأخرة)، وجهّز مجموعة دعم. أثناء الدورة: ابدأ بسؤال القرار لا بشرح الواجهة، ولا تزد العرض المتواصل عن 7 دقائق دون تمرين. أسماء الأزرار قد تتغير مع تطوير النظام؛ راجع الواجهة الحية قبل الجلسة.</p></section>
 
 <div style="margin-top:16px"><button class="b s" onclick="go(-1)">→ السابق</button><button class="b" onclick="go(1)">التالي ←</button></div>
 </div>
@@ -150,10 +135,6 @@ table.t{border-collapse:collapse;width:100%;font-size:.88rem}table.t th,table.t 
 <div id="board" class="tab" style="display:none">
 <div class="card"><h2>🎞️ السبورة البيضاء</h2>
 <p class="note">اختر الدرس ثم اضغط «ابدأ المشاهدة». يُكتب الشرح باليد مع الصوت، ويمكنك التنقل بين اللوحات من الأزرار أسفل الشاشة.</p>
-<div id="wbm_card" style="padding:12px 14px;border:1px solid var(--bd);border-radius:12px;margin:10px 0;background:var(--pr2)"><b>🎞️ استوديو السبورة البيضاء: اصنع سبورتك بنفسك</b>
-<div class="note" style="margin:4px 0">اشرح مشروعك أو أي فكرة من الحقيبة: سجّل صوتك واكتب نص الشرح، ثم ارفعهما في الاستوديو فتُبنى سبورة مكتوبة بالتزامن مع صوتك، وتنزّلها ملفاً. لك <b>3 محاولات بناء في اليوم</b> تتجدد تلقائياً غداً، أما التعديل اليدوي والتصدير فمجانيان.</div>
-<p class="note" id="wbm_left" style="font-weight:800;margin:4px 0"></p>
-<a class="b" href="studio.html" target="_blank" rel="noopener" style="display:inline-block;text-decoration:none">فتح استوديو السبورة ↗</a></div>
 <div class="tools" id="bd_list"></div>
 <div id="bd_frame"></div></div></div>
 <div id="review" class="tab" style="display:none">
@@ -197,38 +178,6 @@ table.t{border-collapse:collapse;width:100%;font-size:.88rem}table.t th,table.t 
 </div>
 </div>
 
-<style>
-#survey .svh{background:linear-gradient(135deg,var(--pr),#0a3d2e);color:#fff;border-radius:14px;padding:16px 18px;margin-bottom:12px}
-#survey .svh h2{margin:0 0 4px;font-size:1.15rem;color:#fff}#survey .svh p{margin:0;opacity:.9;font-size:.92rem}
-#survey .svbar{position:sticky;top:0;z-index:4;background:var(--bg);padding:6px 0}
-#survey .svbar .m{display:flex;justify-content:space-between;font-size:.85rem;color:var(--mu)}
-#survey .svtrk{height:7px;border-radius:7px;background:var(--trk);overflow:hidden;margin-top:4px}#survey .svtrk i{display:block;height:100%;width:0;background:var(--pr);transition:width .25s}
-#survey .svc h3{margin:0 0 4px;color:var(--pr);font-size:1.05rem}#survey .sub{color:var(--mu);font-size:.9rem;margin:0 0 8px}
-#survey .it{padding:11px 0;border-top:1px solid var(--bd)}#survey .it.miss{outline:2px solid var(--no);outline-offset:3px;border-radius:10px}
-#survey .q{margin:0 0 7px;font-weight:600}#survey .q .n{display:inline-block;min-width:1.7em;color:var(--pr);font-weight:800}
-#survey .lg{font-size:.82rem;color:var(--mu);margin:0 0 6px}
-#survey .sc{display:flex;gap:6px}#survey .sc label{flex:1;cursor:pointer}
-#survey input[type=radio],#survey input[type=checkbox]{position:absolute;opacity:0;pointer-events:none}
-#survey .sc span{display:block;text-align:center;border:1px solid var(--bd);border-radius:10px;padding:7px 0;background:var(--bg);font-weight:800}
-#survey .sc input:checked+span,#survey .pl input:checked+span{background:var(--pr);color:#fff;border-color:var(--pr)}
-#survey .pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}#survey .pair .cap{font-size:.8rem;color:var(--mu);margin:0 0 3px}
-@media(max-width:560px){#survey .pair{grid-template-columns:1fr}}
-#survey .pl{display:flex;flex-wrap:wrap;gap:8px}#survey .pl label{cursor:pointer}
-#survey .pl span{display:inline-block;border:1px solid var(--bd);background:var(--bg);border-radius:999px;padding:5px 14px;font-size:.95rem}
-#survey textarea,#survey input[type=text]{width:100%;font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:12px;padding:10px 12px;box-sizing:border-box}
-#sv_res table{border-collapse:collapse;width:100%;font-size:.88rem;margin:6px 0}#sv_res th,#sv_res td{border:1px solid var(--bd);padding:4px 7px;text-align:center}#sv_res td.t{text-align:right}#sv_res th{background:var(--pr2)}
-</style>
-<!-- استبيان تقويم الحقيبة -->
-<div id="survey" class="tab" style="display:none">
-<div class="svh"><h2>📋 استبيان تقويم حقيبة تدريب عمداء الكليات: من المؤشر إلى القرار</h2><p>رأيك يطوّر الحقيبة والدورات القادمة للعمداء. الاستبيان مجهول المصدر، ويستغرق نحو 10 دقائق.</p></div>
-<div id="sv_done" class="card" style="display:none;text-align:center"><div style="font-size:2.2rem">✅</div><h2>شكراً لك، وصلت إجاباتك</h2><p class="note" id="sv_donetxt"></p></div>
-<div id="sv_app">
-<div class="svbar"><div class="m"><span id="sv_cnt">0 / 0</span><span>تُحفظ إجاباتك تلقائياً على جهازك</span></div><div class="svtrk"><i id="sv_bar"></i></div></div>
-<p class="note">الاستبيان <b>بلا اسم</b>: تُحفظ إجاباتك دون رقمك أو اسمك، ويُسجَّل فقط أنك أجبت لمنع التكرار. تُعرض النتائج مجمّعة، ولا توجد إجابة صحيحة أو خاطئة.</p>
-<form id="sv_form" novalidate autocomplete="off"></form>
-<div style="margin:12px 0"><button type="button" class="b" id="sv_send">إرسال الإجابات</button> <button type="button" class="b s" id="sv_clear">مسح الإجابات</button> <span id="sv_msg" class="fb"></span></div>
-</div></div>
-
 <!-- تغذيتي الراجعة (للمتدرب) -->
 <div id="myfb" class="tab" style="display:none"><div id="mfbody"><div class="card"><p class="note">افتح هذا التبويب لتجد نتائجك وتقييم المدرب في مكان واحد.</p></div></div></div>
 
@@ -245,9 +194,6 @@ table.t{border-collapse:collapse;width:100%;font-size:.88rem}table.t th,table.t 
 <div style="padding:10px;border:1px solid var(--bd);border-radius:12px;margin:8px 0"><b>🎞️ استوديو السبورة البيضاء</b>
 <div class="note" style="margin:4px 0">لإنشاء درس جديد: ارفع ملف الصوت وملف النص، فتُبنى السبورة وتُضبط مع الصوت، ثم نزّل الملف وارفعه إلى المستودع.</div>
 <a class="b" href="studio.html" target="_blank" rel="noopener" style="display:inline-block;text-decoration:none">فتح الاستوديو ↗</a></div>
-<div style="padding:10px;border:1px solid var(--bd);border-radius:12px;margin:8px 0"><b>📋 نتائج استبيان الحقيبة</b>
-<div class="note" style="margin:4px 0">إجابات مجهولة المصدر. تُجمَّع هنا المتوسطات والفروق قبل الدورة وبعدها والتعليقات المفتوحة.</div>
-<button class="b" onclick="svLoadRes()">عرض النتائج</button> <button class="b s" id="sv_csvb" style="display:none" onclick="svCsv()">⬇️ تنزيل CSV</button><div id="sv_res"></div></div>
 
 <div id="sw_bar" style="padding:10px;border:1px solid var(--bd);border-radius:12px;margin:8px 0"><b>🎛️ مفاتيح التشغيل</b>
 <div style="margin-top:6px"><button class="b" id="sw_plat" onclick="swToggle('plat')" title="إيقاف/تشغيل المنصة للمتدربين">⏻ …</button></div>
@@ -295,8 +241,6 @@ table.t{border-collapse:collapse;width:100%;font-size:.88rem}table.t th,table.t 
 <button class="b r" onclick="chRun()">🔄 بدء الدورة الجديدة</button><div class="fb" id="ch_msg"></div></details>
 <hr><b>📢 إرسال إشعار للمتدربين</b><input type="text" id="ntext" placeholder="نص الإشعار"><button class="b" onclick="postNote()">نشر الإشعار</button><div class="fb" id="nerr"></div>
 <hr><b>🔐 إدارة الدخول (رمز التحقق)</b><textarea id="ag_roster" rows="4" dir="rtl" placeholder="الاسم،الرقم — سطر لكل متدرب. مثال: أحمد علي،249912345678"></textarea><button class="b" onclick="agSaveRoster()">حفظ قائمة المسجلين</button> <button class="b s" onclick="agLoadReq()">🔄 تحديث الطلبات</button><div class="fb" id="ag_aerr"></div><div id="ag_req"></div><hr><button class="b s" onclick="agUsers()">👥 المسجلون ومحاولات الذكاء الاصطناعي</button><div id="ag_users"></div> <p class="note" id="tcount"></p>
-<hr><b>🧭 نتائج محاكاة الجلسة الثالثة (العمداء)</b> <button class="b s" onclick="simLoad()">🔄 تحديث</button> <button class="b s" onclick="simCsv()">⬇️ تنزيل CSV</button> <a class="b s" href="session3-leadership-simulator.html#coach" target="_blank" rel="noopener" style="text-decoration:none" title="يفتح المحاكاة في وضع المدرب لتوليد أصوات الشخصيات وحفظها">🎙️ توليد أصوات الشخصيات (Fenrir)</a>
-<div id="sim_box" style="margin-top:6px"><p class="note">اضغط «تحديث» لعرض النتائج.</p></div>
 <div id="rkbar" class="note"></div><div class="wrapx"><table class="t" id="ttab"></table></div>
 </div>
 </div>
@@ -768,7 +712,7 @@ function renderAnalytics(){const box=$('ana');if(!box)return;const L=latestRes(R
 
 function tLogout(){TP='';try{$('pin').value=''}catch(e){}location.reload()}   /* يمسح الرمز والبيانات المعروضة من الذاكرة */
 async function unlock(){if(!SHEET_URL){$('perr').textContent='لم يُضبط رابط Google Sheets في الملف';return}
- try{const j=await api({action:'list',pin:$('pin').value});if(!j.ok){$('perr').textContent=pinErr(j);return}TP=$('pin').value;$('tlock').style.display='none';$('tpanel').style.display='block';loadRes();if(window.agLoadReq)agLoadReq();if(window.agUsers)agUsers();if(window.simLoad)simLoad()}catch(e){$('perr').textContent='الرمز غير صحيح أو تعذّر الاتصال'}}
+ try{const j=await api({action:'list',pin:$('pin').value});if(!j.ok){$('perr').textContent=pinErr(j);return}TP=$('pin').value;$('tlock').style.display='none';$('tpanel').style.display='block';loadRes();if(window.agLoadReq)agLoadReq();if(window.agUsers)agUsers()}catch(e){$('perr').textContent='الرمز غير صحيح أو تعذّر الاتصال'}}
 function fixScore(r){const t=String(r.score==null?'':r.score).replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[٫,]/g,'.').trim();
   if(t!==''&&isFinite(+t)){r.score=+t;return r}
   try{const rr=JSON.parse(r.rows);if(Array.isArray(rr)&&rr.length)r.score=Math.max(0,Math.round(rr.reduce((s,x)=>s+(+x.pt||0),0)*100)/100)}catch(e){}
@@ -838,39 +782,16 @@ async function agVerify(){const code=agDigits($('ag_code').value);if(code.length
   try{const j=await api({action:'auth_verify',ph:AG.p,code:code});if(!j.ok){agMsg(j.err||'الرمز غير صحيح');return}
     AG.t=j.tok;AG.p=j.ph;AG.n=j.name;localStorage.setItem('odl_tok',AG.t);localStorage.setItem('odl_ph',AG.p);localStorage.setItem('odl_nm',AG.n);
     agShow(false);agApply()}catch(e){agMsg('تعذّر الاتصال بالخادم.')}}
-function agLogout(){try{['tok','ph','nm'].forEach(k=>{const v=localStorage.getItem('odl_'+k);if(v!==null)localStorage.setItem('odlsv_'+k,v);localStorage.removeItem('odl_'+k)})}catch(e){}location.reload()}
-/* حساب محفوظ بعد الخروج: يُظهر زر «متابعة باسمك» دون رمز جديد */
-function agSavedShow(){try{const t=localStorage.getItem('odlsv_tok');if(!t)return;const n=localStorage.getItem('odlsv_nm')||localStorage.getItem('odlsv_ph')||'';$('ag_resume').style.display='block';$('ag_resume_btn').textContent='▶ متابعة باسم '+n}catch(e){}}
-function agForget(){['tok','ph','nm'].forEach(k=>{try{localStorage.removeItem('odlsv_'+k)}catch(e){}});$('ag_resume').style.display='none'}
-async function agResume(){const t=localStorage.getItem('odlsv_tok');if(!t){agForget();return}
-  agMsg('⏳ جارٍ التحقق من حسابك...',true);
-  const j=await (async()=>{for(let k=0;k<2;k++){try{return await api({action:'auth_check',tok:t})}catch(e){await new Promise(r=>setTimeout(r,1200))}}return 'net'})();
-  if(j==='net'){agMsg('تعذّر الاتصال بالخادم. تحقق من الإنترنت وأعد المحاولة.');return}
-  if(j&&j.ok){['tok','ph','nm'].forEach(k=>{const v=localStorage.getItem('odlsv_'+k);if(v!==null)localStorage.setItem('odl_'+k,v)});agForget();location.reload();return}
-  agForget();agMsg('انتهت صلاحية جلستك أو لم يعد حسابك مسجلاً. اطلب رمز تحقق جديداً.')}
+function agLogout(){['odl_tok','odl_ph','odl_nm'].forEach(k=>localStorage.removeItem(k));location.reload()}
 async function agInit(){let _s=null;try{_s=await api({action:'sys_status'});if(_s&&_s.ok)applyBrand(_s.brand)}catch(e){}
   if(location.hash==='#admin'){agShow(false);return}
   if(_s&&_s.ok&&_s.on===false){agPaused(_s.msg);return}
-  if(!AG.t){agShow(true);agSavedShow();return}
-  /* البوابة تبقى مغلقة حتى يؤكد الخادم أن الجلسة سليمة (لا يُفتح شيء قبل التحقق) */
-  const j=await agCheck();
-  if(j==='net'){agShow(true);agMsg('تعذّر الاتصال بالخادم للتحقق من حسابك. تحقق من الإنترنت ثم أعد تحميل الصفحة.');return}
-  if(j==='paused')return;
-  if(j&&j.ok){AG.p=j.ph;AG.n=j.name;agShow(false);agApply();agGuardStart();return}
-  agKick()}
-/* فحص الجلسة: يعيد الرد، أو 'paused'، أو 'net' عند تعذر الاتصال (بعد محاولتين) */
-async function agCheck(){for(let k=0;k<2;k++){try{const j=await api({action:'auth_check',tok:AG.t});if(j&&j.err==='paused')return 'paused';return j}catch(e){await new Promise(r=>setTimeout(r,1200))}}return 'net'}
-/* طرد نهائي: مسح الجلسة المحفوظة وإظهار شاشة الدخول (يُستدعى حين يرفض الخادم الرمز، كأن حُذف المتدرب) */
-let _kicked=false;
-function agKick(){if(_kicked)return;_kicked=true;
-  ['odl_tok','odl_ph','odl_nm','odlsv_tok','odlsv_ph','odlsv_nm'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});
-  AG.t='';AG.p='';AG.n='';location.reload()}
-/* مراقبة دائمة: كل دقيقتين وعند العودة إلى الصفحة، وكل رد من الخادم يقول إن الجلسة غير صالحة يطرد المتدرب */
-function agGuardStart(){
-  const chk=async()=>{if(!AG.t||document.hidden||TP)return;const j=await agCheck();if(j&&j!=='net'&&j!=='paused'&&j.ok===false)agKick()};
-  setInterval(chk,120000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})}
-(function(){const _b=api;api=async function(q){const j=await _b(q);
-  if(j&&(j.code==='SESSION_INVALID'||j.err==='unauth')&&AG.t&&!(q&&q.pin!==undefined))agKick();return j}})();
+  if(!AG.t){agShow(true);return}
+  agShow(false);
+  try{const j=await api({action:'auth_check',tok:AG.t});
+    if(j.ok){AG.p=j.ph;AG.n=j.name;agApply();return}
+    if(j.err==='paused')return;   /* المنصة موقوفة: نُبقي جلسة المتدرب سليمة */
+    ['odl_tok','odl_ph','odl_nm'].forEach(k=>localStorage.removeItem(k));AG.t='';agShow(true)}catch(e){agApply()}}
 /* لوحة المدرب */
 function anErr(j){return !j?'تعذّر الاتصال':j.err==='apin'?'رمز مدير النظام غير صحيح'+(j.left!=null?' (المحاولات المتبقية '+j.left+')':''):j.err==='admin_not_set'?'لم يُضبط رمز مدير النظام في Code.gs (ADMIN_PIN)':j.err==='locked'?'الرمز مقفل مؤقتاً، انتظر '+(j.wait||'')+' دقيقة':j.err==='pin'?'رمز المدرب غير صحيح':j.err==='short'?'الاسم قصير جداً':j.err||'تعذّر التنفيذ'}
 async function anLoad(){const m=$('an_msg'),box=$('an_list');m.style.color='';m.textContent='⏳ جارٍ التحميل...';
@@ -900,7 +821,7 @@ async function agLoadReq(t){const box=$('ag_req');try{const j=await api({action:
   catch(e){if(!t){setTimeout(()=>agLoadReq(1),1500);return}box.innerHTML='<p class="note">تعذّر تحميل الطلبات ('+esc(e.message||'خطأ')+'). اضغط «تحديث الطلبات» مرة أخرى.</p>'}}
 setInterval(()=>{if(TP&&!document.hidden&&$('tpanel').style.display==='block'&&!document.querySelector('#ag_req a'))agLoadReq()},30000);
 async function agIssue(ph){const row=$('agr_'+ph);try{const j=await api({action:'auth_issue',pin:TP,ph:ph});if(!j.ok)throw new Error(j.err);
-  const msg='رمز الدخول إلى الحقيبة التدريبية: '+j.code+'\nصالح لمدة '+j.ttl+' دقيقة. لا تشاركه مع أحد.';
+  const msg='رمز الدخول إلى الحقيبة التدريبية: '+j.code+'\n'+(j.ttl?'صالح لمدة '+j.ttl+' دقيقة.':'صالح حتى يُستخدم.')+' لا تشاركه مع أحد.';
   row.innerHTML=`<span>${esc(j.name||'')} <span dir="ltr">${esc(ph)}</span></span><a class="b" target="_blank" rel="noopener" href="https://wa.me/${esc(ph)}?text=${encodeURIComponent(msg)}">فتح واتساب وإرسال الرمز</a>`}
   catch(e){row.insertAdjacentHTML('beforeend','<span class="fb" style="color:var(--no)">'+esc(e.message||'فشل')+'</span>')}}
 function agTab(w){$('ag_trainee').style.display=w==1?'block':'none';$('ag_trainer').style.display=w==2?'block':'none';$('ag_t1').classList.toggle('s',w!=1);$('ag_t2').classList.toggle('s',w!=2);agMsg('')}
@@ -1011,9 +932,9 @@ async function agUsers(){const box=$('ag_users');box.innerHTML='<p class="note">
     box.innerHTML=j.rows.length?j.rows.map(r=>`<div class="agrow"><span>${r.req?'🔔 ':''}${esc(r.name||'—')} <span dir="ltr">${esc(r.ph)}</span> — المتبقي: <b>${esc(String(r.left))}</b></span><span><button class="b" onclick="agIssueU('${esc(r.ph)}',this)">🔑 إنشاء رمز</button> <button class="b" onclick="agSetAi('${esc(r.ph)}',3)">تجديد إلى 3</button> <button class="b s" onclick="agSetAi('${esc(r.ph)}',${+r.left+1})">+1</button> <button class="b s" onclick="agSetAi('${esc(r.ph)}',0)">تصفير</button> <button class="b s" style="color:var(--no)" onclick="agDel('${esc(r.ph)}')">🗑 حذف</button></span></div>`).join(''):'<p class="note">لا يوجد مسجلون.</p>'}
   catch(e){box.innerHTML='<p class="note">تعذّر تحميل القائمة.</p>'}}
 async function agIssueU(ph,btn){try{btn.disabled=true;const j=await api({action:'auth_issue',pin:TP,ph:ph});if(!j.ok)throw new Error(j.err||'فشل');
- const msg='رمز الدخول إلى الحقيبة التدريبية: '+j.code+'\nصالح لمدة '+j.ttl+' دقيقة. لا تشاركه مع أحد.';
+ const msg='رمز الدخول إلى الحقيبة التدريبية: '+j.code+'\n'+(j.ttl?'صالح لمدة '+j.ttl+' دقيقة.':'صالح حتى يُستخدم.')+' لا تشاركه مع أحد.';
  const row=btn.closest('.agrow'),old=row.nextElementSibling;if(old&&old.classList.contains('agcode'))old.remove();
- row.insertAdjacentHTML('afterend','<div class="agrow agcode" style="background:var(--pr2)"><span>🔑 رمز '+esc(j.name||ph)+': <b dir="ltr">'+esc(j.code)+'</b> (صالح '+j.ttl+' دقيقة)</span><a class="b" target="_blank" rel="noopener" href="https://wa.me/'+esc(ph)+'?text='+encodeURIComponent(msg)+'">فتح واتساب وإرسال الرمز</a></div>')}
+ row.insertAdjacentHTML('afterend','<div class="agrow agcode" style="background:var(--pr2)"><span>🔑 رمز '+esc(j.name||ph)+': <b dir="ltr">'+esc(j.code)+'</b> ('+(j.ttl?'صالح '+j.ttl+' دقيقة':'بلا مدة انتهاء')+')</span><a class="b" target="_blank" rel="noopener" href="https://wa.me/'+esc(ph)+'?text='+encodeURIComponent(msg)+'">فتح واتساب وإرسال الرمز</a></div>')}
  catch(e){alert('تعذّر إنشاء الرمز: '+(e.message||'خطأ'))}finally{btn.disabled=false}}
 async function agDel(ph){if(!confirm('حذف المتدرب '+ph+' من التسجيل؟\nيُلغى دخوله فوراً ويختفي من التتبع. تبقى نتائجه ومشاريعه في الجدول.'))return;
   try{const j=await api({action:'auth_delete',pin:TP,ph:ph});if(!j.ok)throw new Error(j.err);agUsers();agLoadReq()}catch(e){$('ag_users').insertAdjacentHTML('afterbegin','<p class="note" style="color:var(--no)">تعذّر الحذف: '+esc(e.message||'خطأ')+'</p>')}}
@@ -1206,34 +1127,6 @@ async function loadVid(){
 async function vidFb(ph,ts){const k=ph+'_'+ts;try{const j=await api({action:'video_fb',pin:TP,ph:ph,ts:ts,text:$('vf_'+k).value,rating:$('vr_'+k).value});alert(j.ok?'تم الحفظ. سيراه المتدرب في «تغذيتي الراجعة».':'تعذّر الحفظ')}catch(e){alert('تعذّر الاتصال')}}
 
 
-/* ===== نتائج محاكاة الجلسة الثالثة (لوحة المدرب) ===== */
-const SIM_COMP={lead:'التكليف والقيادة',read:'القراءة والتفسير',diag:'التشخيص واتخاذ القرار',esc:'التصعيد للمركز',time:'الوقت والروتين',follow:'المتابعة',rep:'التقارير'};
-let SIM_ROWS=[];
-const simCol=p=>p>=80?'#1b7f45':p>=50?'#d9a400':'#b3261e';
-function simWeak(r){let w=null;Object.keys(r.comp||{}).forEach(k=>{const c=r.comp[k];if(c&&c[1]>0){const p=c[0]/c[1];if(!w||p<w.p)w={k:k,p:p}}});return w}
-async function simLoad(){const box=$('sim_box');if(!box)return;box.innerHTML='<p class="note">⏳ جارٍ التحميل...</p>';
-  try{const j=await api({action:'sim_list',pin:TP});if(!j.ok)throw new Error(j.err||'');SIM_ROWS=j.rows||[];simRender()}
-  catch(e){box.innerHTML='<p class="note">تعذّر تحميل نتائج المحاكاة.</p>'}}
-function simRender(){const box=$('sim_box'),R=SIM_ROWS;
-  if(!R.length){box.innerHTML='<p class="note">لم يُرسل أي متدرب نتيجة المحاكاة بعد.</p>';return}
-  const avg=a=>a.length?Math.round(a.reduce((s,x)=>s+x,0)/a.length):0;
-  const cs=Object.keys(SIM_COMP).map(k=>{const ps=R.map(r=>r.comp&&r.comp[k]&&r.comp[k][1]>0?r.comp[k][0]/r.comp[k][1]*100:null).filter(x=>x!==null);return{k:k,p:ps.length?avg(ps):null}});
-  const weakest=cs.filter(c=>c.p!==null).sort((a,b)=>a.p-b.p)[0];
-  const strong=R.filter(r=>r.best>=75).length,ag=R.filter(r=>r.agent&&r.agent.src==='agents').length;
-  const card=(t,v)=>'<div style="flex:1;min-width:120px;border:1px solid var(--bd);border-radius:12px;padding:6px 10px;text-align:center"><div class="note">'+t+'</div><b style="font-size:1.3rem">'+v+'</b></div>';
-  let o='<div style="display:flex;gap:8px;flex-wrap:wrap;margin:6px 0">'+card('المتدربون',R.length)+card('متوسط أفضل نتيجة',avg(R.map(r=>r.best))+' / 100')+card('وصلوا 75 فأكثر',strong+' من '+R.length)+card('قيّمهم وكلاء المنصة',ag+' من '+R.length)+'</div>';
-  o+='<b>متوسط الكفايات للمجموعة</b>'+(weakest?' <span class="note">— الأضعف: '+esc(SIM_COMP[weakest.k])+' ('+weakest.p+'%)</span>':'');
-  o+=cs.map(c=>c.p===null?'':'<div style="margin:4px 0"><div style="display:flex;justify-content:space-between;font-size:.85rem"><span>'+esc(SIM_COMP[c.k])+'</span><b>'+c.p+'%</b></div><div style="height:10px;border-radius:6px;background:var(--bd);overflow:hidden"><i style="display:block;height:100%;width:'+c.p+'%;background:'+simCol(c.p)+'"></i></div></div>').join('');
-  o+='<div class="wrapx" style="margin-top:8px"><table class="t"><tr><th>المتدرب</th><th>الكلية</th><th>آخر نتيجة</th><th>الأفضل</th><th>المحاولات</th><th>التصنيف</th><th>أضعف كفاية</th><th>تقييم الرسالة</th><th>التاريخ</th><th>تفصيل</th></tr>';
-  o+=R.map(r=>{const w=simWeak(r),hist=(r.hist||[]).map(x=>'<tr><td>'+esc(x.title)+'</td><td>'+esc(String(x.earned))+' / '+esc(String(x.max))+'</td></tr>').join(''),rt=r.routine?'<div class="note">الروتين: لوحة '+esc(r.routine.d1)+' · مقررات '+esc(r.routine.d2)+' · تقرير شهري '+esc(r.routine.m3)+' · تصدير '+esc(r.routine.e4)+'</div>':'';
-    return '<tr><td>'+esc(r.name||'—')+' <span dir="ltr" class="note">'+esc(r.ph)+'</span>'+(r.overload?' ⚠️':'')+'</td><td>'+esc(r.college||'—')+(r.mode==='team'?' 👥':'')+(r.depts?'<br><small class="note">'+esc(r.depts)+'</small>':'')+'</td><td><b style="color:'+simCol(r.score)+'">'+r.score+'</b></td><td>'+r.best+'</td><td>'+r.tries+'</td><td>'+esc(r.persona||'')+'</td><td>'+(w?esc(SIM_COMP[w.k]||w.k)+' ('+Math.round(w.p*100)+'%)':'—')+'</td><td>'+(r.agent?(r.agent.src==='agents'?'🤖 وكلاء':'محلي')+' ('+r.agent.score+'/12)':'—')+'</td><td>'+(r.ts?new Date(r.ts).toLocaleDateString('ar'):'')+'</td><td><details><summary>عرض</summary><div style="min-width:260px"><table class="t"><tr><th>القرار</th><th>النقاط</th></tr>'+hist+'</table><div class="note">DPI '+r.kpi.dpi+'/50 · API '+r.kpi.api+'/50 · الاعتماد '+r.kpi.acc+'%'+(r.overload?' · كتب تقرير القسم بنفسه ⚠️':'')+'</div>'+rt+(r.agent&&r.agent.why?'<div class="note">تعليق الوكيل: '+esc(r.agent.why)+'</div>':'')+'</div></details></td></tr>'}).join('');
-  box.innerHTML=o+'</table></div>'}
-function simCsv(){if(!SIM_ROWS.length){alert('لا توجد نتائج لتنزيلها. اضغط تحديث أولاً.');return}
-  const ks=Object.keys(SIM_COMP),q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
-  const rows=[['الاسم','الكلية','الأقسام','الوضع','الهاتف','آخر نتيجة','الأفضل','المحاولات','التصنيف'].concat(ks.map(k=>SIM_COMP[k]+' %')).concat(['DPI','API','ملف الاعتماد','مقيّم الرسالة','درجة الرسالة','التاريخ'])];
-  SIM_ROWS.forEach(r=>rows.push([r.name,r.college||'',r.depts||'',r.mode==='team'?'فريق':'فردي',r.ph,r.score,r.best,r.tries,r.persona].concat(ks.map(k=>r.comp&&r.comp[k]&&r.comp[k][1]>0?Math.round(r.comp[k][0]/r.comp[k][1]*100):'')).concat([r.kpi.dpi,r.kpi.api,r.kpi.acc,r.agent?(r.agent.src==='agents'?'وكلاء المنصة':'محلي'):'',r.agent?r.agent.score:'',r.ts?new Date(r.ts).toISOString():''])));
-  const b=new Blob(['\ufeff'+rows.map(r=>r.map(q).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='نتائج_محاكاة_الجلسة_الثالثة.csv';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},600)}
-
 /* ===== تتبع المتدربين وتقارير واتساب (لوحة المدرب) ===== */
 const TRK_IC={done:'✅',wip:'⏳',todo:'⬜'};
 function trkSay(t,bad){const m=$('trk_msg');m.textContent=t;m.style.color=bad?'var(--no)':''}
@@ -1370,155 +1263,6 @@ function boardOpen(i){const L=BOARD_LESSONS[i];if(!L)return;
 async function boardOpenUnit(){document.querySelector('#nav button[data-t="board"]').click();await boardScan();
  const i=BOARD_LESSONS.findIndex(l=>l.u===cur);if(i<0){alert('لا توجد سبورة لهذه الوحدة بعد. اختر من الدروس المتاحة في تبويب السبورة.');return}boardOpen(i)}
 document.querySelector('#nav button[data-t="board"]').addEventListener('click',boardScan);
-try{if(location.protocol==='file:')document.getElementById('sims_file').style.display='block'}catch(e){}
-</script>
-<script>
-/* ===== استبيان تقويم الحقيبة ===== */
-(function(){
-const DEMO = [
- {k:'role', t:'صفتك الوظيفية', o:['عميد كلية','وكيل كلية','رئيس قسم','أخرى']},
- {k:'exp',  t:'خبرتك بالبوابة الموحدة لأنظمة المركز قبل الدورة', o:['لم أستخدمها من قبل','استخدمتها قليلاً','أستخدمها بانتظام']},
- {k:'device', t:'الجهاز الذي استخدمته غالباً في الحقيبة', o:['حاسوب','هاتف','الاثنان']},
- {k:'done', t:'ما أنجزته من الحقيبة (يمكنك اختيار أكثر من خيار)', multi:true, o:['الجلسة الأولى','الجلسة الثانية','الجلسة الثالثة','جلسة المتابعة','محاكاة الجلسة الثالثة','الاختبار القبلي','الاختبار البعدي','المشروع التطبيقي']}
-];
-const COMPS = [
- 'الدخول إلى البوابة بحسابي والتنقل بين أنظمتها العشرة، وتحديد النظام الذي يجيب عن كل سؤال إداري',
- 'قراءة لوحة معلومات النظام والتمييز بين المؤشر الذي يحتاج تدخلاً والذي يمكن تجاهله',
- 'تفسير تصنيف المقرر في بطاقة صحة المقرر (سليم / يحتاج تحسين / حرج) وتحويله إلى إجراء محدد',
- 'قراءة مؤشرات CQIS الأربعة (AQI وDPI وAPI وCHI) وربطها بقرار أكاديمي، بالبدء بالمؤشر الفرعي الأضعف',
- 'قراءة نتائج الاستبانات في ISSS مع النظر إلى نسبة الاستجابة قبل الاعتماد على النتيجة',
- 'متابعة تقرير الخطة التشغيلية الشهرية واستخراج ما يخص كليتي ورفع سؤال محدد للمركز',
- 'تصدير التقرير الشهري بالصيغة المناسبة ومشاركته مع الحفاظ على أمان حسابي',
- 'بناء روتين قيادي مكتوب (أسبوعي وشهري وفصلي) وجدولته في تقويمي'
-];
-const AGREE = '5 = أوافق بشدة  ·  4 = أوافق  ·  3 = محايد  ·  2 = لا أوافق  ·  1 = لا أوافق بشدة';
-const SECTIONS = [
- {p:'s', title:'القسم الثالث: المحتوى وتنظيم الحقيبة', leg:AGREE, items:[
-  'أهداف الحقيبة ومخرجات التعلم واضحة لي منذ البداية',
-  'مخرجات الحقيبة تمسّ عملي الفعلي عميداً للكلية',
-  'تسلسل الجلسات الثلاث (الدخول والقراءة، ثم المؤشر إلى القرار، ثم المتابعة والروتين) منطقي',
-  'قاعدة «اقرأ ← فسّر ← قرّر ← كلّف ← تابع» سهلة التذكر ومفيدة في العمل',
-  'التوازن بين العرض (25%) والتطبيق المباشر على النظام (75%) مناسب',
-  'مدة الجلسات (90 دقيقة) مناسبة للمحتوى والتطبيق'
- ]},
- {p:'g', title:'القسم الرابع: الأنشطة وأدوات الحقيبة', leg:AGREE, items:[
-  'الجولة التفاعلية على المنصة (الجلسة الأولى) ساعدتني على معرفة البوابة وأنظمتها',
-  'محاكاة الجلسة الثالثة (أربعة أسابيع من القرارات) قرّبتني من واقع عملي',
-  'الوكلاء الذكيون، ومنهم «مستشار القرار»، ساعدوني على تحويل المؤشرات إلى إجراءات',
-  'دروس السبورة البيضاء المسجلة واضحة ومفيدة لمراجعة الوحدات',
-  'البطاقة المرجعية والقوالب الجاهزة (خطة الإجراءات، سجل المقررات الحرجة، روتين العميد) عملية',
-  'الاختبار القبلي والبعدي يقيسان فعلاً ما تعلمته',
-  'المشروع التطبيقي (خطة إجراءات لكليتي) واضح المعايير ومفيد'
- ]},
- {p:'t', title:'القسم الخامس: المدرب والتيسير', leg:AGREE, items:[
-  'المدرب متمكن من محتوى الحقيبة وأنظمة المركز',
-  'بدأ المدرب بسؤال القرار لا بشرح الواجهة',
-  'أتيح لي وقت كافٍ للتطبيق على حسابي وبياناتي الفعلية',
-  'التغذية الراجعة على مشروعي أو أدائي كانت محددة ومفيدة',
-  'وجدت الدعم الذي احتجته (رمز الدخول، المحاولات، الاستفسارات)'
- ]},
- {p:'p', title:'القسم السادس: المنصة والتجربة التقنية', leg:AGREE, items:[
-  'الدخول برقم الواتساب ورمز التحقق سهل وواضح',
-  'منصة الحقيبة سريعة وثابتة ولم تتوقف أثناء استخدامي',
-  'التنقل بين تبويبات الحقيبة (الشرح، السبورة، المحاكاة، الاختبار، المشروع) واضح',
-  'تبويب «تغذيتي الراجعة» جمع لي نتائجي وتقييم المدرب في مكان واحد',
-  'البيانات التجريبية في النظام قريبة من واقع كليتي'
- ]},
- {p:'u', title:'القسم السابع: الأثر المتوقع على عملي', sub:'ما الذي ستفعله فعلاً بعد الدورة؟', leg:AGREE, items:[
-  'سأخصّص 15 دقيقة أسبوعياً لفتح اللوحة الموحدة وقراءة التغيرات',
-  'سأعالج المؤشر الفرعي الأضعف قبل أن أعالج CHI مباشرة',
-  'سأنظر في نسبة الاستجابة قبل أن أبني قراراً على نتيجة استبانة',
-  'سأرفع للمركز أسئلة محددة (النشاط، والدليل بالرقم، والمطلوب) بدل الملاحظات العامة',
-  'سأنقل ما تعلمته إلى رؤساء أقسامي وأتابع معهم بالمؤشرات نفسها',
-  'أرشّح هذه الحقيبة لعمداء آخرين'
- ]}
-];
-const OPEN = [
- {k:'o1', t:'ما أكثر ما أفادك في الحقيبة؟'},
- {k:'o2', t:'ما الذي ينقص الحقيبة أو يحتاج تحسيناً (جلسة، نظام، أداة، وقت)؟'},
- {k:'o3', t:'ما القرار أو الإجراء الذي اتخذته أو ستتخذه في كليتك بسبب هذه الحقيبة؟'}
-];
-const q=(s,r)=>(r||document).querySelector(s), form=q('#sv_form'), KEY='odl_svy_draft_v2';
-const required=[]; let state={}, ROWS=[];
-const esc2=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-function scale(n){return '<div class="sc" role="radiogroup">'+[5,4,3,2,1].map(v=>'<label><input type="radio" name="'+n+'" value="'+v+'"><span>'+v+'</span></label>').join('')+'</div>'}
-function pills(d){const t=d.multi?'checkbox':'radio';return '<div class="pl">'+d.o.map(o=>'<label><input type="'+t+'" name="'+d.k+'" value="'+o+'"><span>'+o+'</span></label>').join('')+'</div>'}
-function build(){let h='';
-  h+='<section class="card svc"><h3>القسم الأول: بيانات أولية</h3>';
-  DEMO.forEach((d,i)=>{required.push(d.k);h+='<div class="it" data-key="'+d.k+'"><p class="q"><span class="n">'+(i+1)+'.</span>'+d.t+'</p>'+(d.text?'<input type="text" class="plain" name="'+d.k+'" maxlength="80" placeholder="'+d.ph+'">':pills(d))+'</div>'});
-  h+='</section><section class="card svc"><h3>القسم الثاني: مستوى التمكّن قبل الدورة وبعدها</h3><p class="sub">قدّر مستوى تمكنك من كل كفاية في الحالين: <b>قبل الدورة</b> و<b>بعدها</b>.</p><p class="lg">5 = ممتاز  ·  4 = جيد  ·  3 = متوسط  ·  2 = ضعيف  ·  1 = ضعيف جداً</p>';
-  COMPS.forEach((t,i)=>{const n=i+1;required.push('c'+n+'b','c'+n+'a');h+='<div class="it" data-key="c'+n+'"><p class="q"><span class="n">'+n+'.</span>'+t+'</p><div class="pair"><div><p class="cap">قبل الدورة</p>'+scale('c'+n+'b')+'</div><div><p class="cap">بعد الدورة</p>'+scale('c'+n+'a')+'</div></div></div>'});
-  h+='</section>';
-  SECTIONS.forEach(s=>{h+='<section class="card svc"><h3>'+s.title+'</h3>'+(s.sub?'<p class="sub">'+s.sub+'</p>':'')+'<p class="lg">'+s.leg+'</p>';
-    s.items.forEach((t,i)=>{const k=s.p+(i+1);required.push(k);h+='<div class="it" data-key="'+k+'"><p class="q"><span class="n">'+(i+1)+'.</span>'+t+'</p>'+scale(k)+'</div>'});h+='</section>'});
-  h+='<section class="card svc"><h3>القسم الثامن: أسئلة مفتوحة <small style="color:var(--mu);font-weight:400">(اختيارية)</small></h3>';
-  OPEN.forEach((o,i)=>{h+='<div class="it"><p class="q"><span class="n">'+(i+1)+'.</span>'+o.t+'</p><textarea name="'+o.k+'" rows="3" maxlength="1500"></textarea></div>'});
-  form.innerHTML=h+'</section>'}
-function read(){const s={};
-  form.querySelectorAll('input[type=radio]:checked').forEach(i=>{s[i.name]=/^(c\d+[ab]|[sgtpu]\d+)$/.test(i.name)?Number(i.value):i.value});
-  const tl=[...form.querySelectorAll('input[name=done]:checked')].map(i=>i.value);if(tl.length)s.done=tl;
-  form.querySelectorAll('input.plain').forEach(i=>{if(i.value.trim())s[i.name]=i.value.trim()});
-  form.querySelectorAll('textarea').forEach(t=>{if(t.value.trim())s[t.name]=t.value.trim()});return s}
-const filled=k=>{const v=state[k];return Array.isArray(v)?v.length>0:(v!==undefined&&v!=='')};
-const itemDone=k=>/^c\d+$/.test(k)?(filled(k+'b')&&filled(k+'a')):filled(k);
-function progress(){const d=required.filter(filled).length;q('#sv_cnt').textContent=d+' / '+required.length;q('#sv_bar').style.width=Math.round(d/required.length*100)+'%'}
-let tm;function onCh(){state=read();progress();clearTimeout(tm);tm=setTimeout(()=>{try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}},300);
-  form.querySelectorAll('.miss').forEach(e=>{if(itemDone(e.dataset.key))e.classList.remove('miss')})}
-function restore(){let d;try{d=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){d=null}if(!d)return;
-  Object.keys(d).forEach(k=>{const tx=form.querySelector('input.plain[name="'+k+'"]');if(tx){tx.value=d[k];return}
-    if(k==='done'){d[k].forEach(v=>{const el=[...form.querySelectorAll('input[name=done]')].find(i=>i.value===v);if(el)el.checked=true});return}
-    if(/^o\d$/.test(k)){const ta=form.querySelector('textarea[name='+k+']');if(ta)ta.value=d[k];return}
-    const el=[...form.querySelectorAll('input[name="'+k+'"]')].find(i=>i.value===String(d[k]));if(el)el.checked=true});state=read();progress()}
-function msg(t,c){const m=q('#sv_msg');m.textContent=t||'';m.style.color=c==='ok'?'var(--ok)':'var(--no)'}
-function showDone(t){q('#sv_app').style.display='none';q('#sv_done').style.display='block';q('#sv_donetxt').textContent=t||'نشكر لك وقتك ومشاركتك الصادقة في تطوير الحقيبة.'}
-const ERR={done:'سبق أن أرسلت إجاباتك. شكراً لك.',incomplete:'بعض الإجابات المطلوبة ناقصة.',unauth:'انتهت جلسة دخولك. أعد الدخول ثم أعد الإرسال.'};
-async function post(o){const r=await fetch(SHEET_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(o)});return r.json()}
-async function send(){state=read();
-  form.querySelectorAll('.miss').forEach(e=>e.classList.remove('miss'));
-  const miss=required.filter(k=>!filled(k));
-  if(miss.length){miss.forEach(k=>{const b=/^c\d+[ab]$/.test(k)?k.slice(0,-1):k;const el=form.querySelector('.it[data-key="'+b+'"]');if(el)el.classList.add('miss')});
-    msg('أكمل الأسئلة المظلّلة بالأحمر (ما زال ناقصاً: '+miss.length+')');const f=form.querySelector('.miss');if(f)f.scrollIntoView({block:'center'});return}
-  if(!AG||!AG.t){msg('سجّل الدخول أولاً.');return}
-  const btn=q('#sv_send');btn.disabled=true;msg('جارٍ الإرسال…','ok');
-  try{const j=await post({action:'sv_submit',tok:AG.t,ans:state});
-    if(j&&j.ok){try{localStorage.removeItem(KEY)}catch(e){}showDone();return}
-    if(j&&j.error==='done'){showDone(ERR.done);return}
-    msg(ERR[j&&(j.error||j.err)]||'تعذّر الإرسال. حاول مرة أخرى.')}
-  catch(e){msg('تعذّر الاتصال بالخادم. إجاباتك محفوظة على جهازك، حاول مرة أخرى.')}
-  btn.disabled=false}
-let built=false;
-window.svOpen=async function(){
-  if(!built){build();form.addEventListener('change',onCh);form.addEventListener('input',onCh);restore();built=true;
-    q('#sv_send').addEventListener('click',send);
-    q('#sv_clear').addEventListener('click',()=>{if(!confirm('هل تريد مسح كل إجاباتك؟'))return;try{localStorage.removeItem(KEY)}catch(e){}form.reset();state={};progress();msg('')})}
-  try{if(AG&&AG.t&&SHEET_URL){const j=await post({action:'sv_status',tok:AG.t});if(j&&j.ok&&j.done)showDone(ERR.done)}}catch(e){}};
-document.querySelector('#nav button[data-t="survey"]').addEventListener('click',window.svOpen);
-/* ---- نتائج المدرب ---- */
-const mean=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:NaN, f1=x=>isFinite(x)?x.toFixed(2):'—';
-const nums=k=>ROWS.map(r=>Number(r[k])).filter(n=>n>=1&&n<=5);
-window.svLoadRes=async function(){const box=q('#sv_res');box.innerHTML='<p class="note">⏳ جارٍ التحميل...</p>';
-  try{const j=await post({action:'sv_results',pin:TP});if(!j.ok)throw 0;ROWS=j.rows||[];
-    if(!ROWS.length){box.innerHTML='<p class="note">لا توجد إجابات بعد.</p>';return}
-    let h='<p class="note"><b>عدد المستجيبين: '+ROWS.length+'</b></p>';
-    h+='<b>القسم الثاني: التمكّن قبل الدورة وبعدها</b><table><tr><th>الكفاية</th><th>قبل</th><th>بعد</th><th>الفرق</th></tr>'+COMPS.map((t,i)=>{const b=mean(nums('c'+(i+1)+'b')),a=mean(nums('c'+(i+1)+'a'));return '<tr><td class="t">'+(i+1)+'. '+esc2(t)+'</td><td>'+f1(b)+'</td><td>'+f1(a)+'</td><td><b>'+(isFinite(a-b)?((a-b>=0?'+':'')+(a-b).toFixed(2)):'—')+'</b></td></tr>'}).join('')+'</table>';
-    SECTIONS.forEach(s=>{h+='<b>'+esc2(s.title)+'</b><table><tr><th>العبارة</th><th>المتوسط</th><th>5</th><th>4</th><th>3</th><th>2</th><th>1</th></tr>'+s.items.map((t,i)=>{const v=nums(s.p+(i+1));return '<tr><td class="t">'+(i+1)+'. '+esc2(t)+'</td><td><b>'+f1(mean(v))+'</b></td>'+[5,4,3,2,1].map(x=>'<td>'+v.filter(n=>n===x).length+'</td>').join('')+'</tr>'}).join('')+'</table>'});
-    OPEN.forEach(o=>{const t=ROWS.map(r=>String(r[o.k]||'').trim()).filter(Boolean);h+='<b>'+esc2(o.t)+'</b> ('+t.length+')'+(t.length?'<ul>'+t.map(x=>'<li>'+esc2(x)+'</li>').join('')+'</ul>':'<p class="note">لا توجد تعليقات.</p>')});
-    box.innerHTML=h;q('#sv_csvb').style.display='inline-block'}
-  catch(e){box.innerHTML='<p class="note">تعذّر تحميل النتائج. تأكد من نشر أحدث Code.gs.</p>'}};
-window.svCsv=function(){if(!ROWS.length)return;const ks=Object.keys(ROWS[0]);
-  const c=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
-  const t='\ufeff'+ks.map(c).join(',')+'\n'+ROWS.map(r=>ks.map(k=>c(r[k])).join(',')).join('\n');
-  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/csv;charset=utf-8'}));a.download='survey-results.csv';a.click()};
-})();
-</script>
-<script>
-/* عرض المحاولات المتبقية للسبورة داخل الحقيبة */
-async function wbmLeft(){const e=document.getElementById('wbm_left');if(!e)return;
- if(typeof AG==='undefined'||!AG.t||!SHEET_URL){e.textContent='سجّل الدخول لترى محاولاتك.';return}
- try{const r=await fetch(SHEET_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'wb_status',tok:AG.t})});const j=await r.json();
-  e.textContent=j&&j.ok?('🎟️ محاولات البناء المتبقية لك اليوم: '+j.left+' من 3'+(j.left===0?' — تتجدد غداً تلقائياً، أو اطلب التجديد من داخل الاستوديو':'')):'';}
- catch(x){e.textContent=''}}
-document.querySelector('#nav button[data-t="board"]').addEventListener('click',wbmLeft);
 </script>
 </body>
 </html>
