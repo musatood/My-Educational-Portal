@@ -134,7 +134,7 @@ table.t{border-collapse:collapse;width:100%;font-size:.88rem}table.t th,table.t 
 <div class="tools">
 <button class="b s" onclick="speak()">🔊 استمع للوحدة</button>
 <button class="b s" onclick="dlUnit()">📥 تنزيل الوحدة (دون إنترنت)</button>
-<button class="b s" onclick="speechSynthesis.cancel()">⏹ إيقاف الصوت</button> <select id="avoice" style="width:auto;margin:3px" title="صوت القراءة"></select>
+<button class="b s" onclick="speechSynthesis.cancel()">⏹ إيقاف الصوت</button> <select id="avoice" style="width:auto;margin:3px" title="صوت القراءة"></select> <label style="margin:3px;white-space:nowrap"><input type="checkbox" id="autovoice" onchange="autoVoiceSet(this.checked)"> 🔊 قراءة تلقائية</label>
 <button class="b" onclick="aiText('summary')">✨ ملخص بالذكاء الاصطناعي</button>
 <button class="b" onclick="aiText('simple')">💡 شرح مبسّط بأمثلة</button>
 <select id="vstyle" style="width:auto;margin:3px"><option value="slides">🎞️ شرائح متحركة</option><option value="steps">🪜 خطوات متسلسلة</option><option value="qa">❓ سؤال وجواب</option><option value="story">🎭 قصة وحوار</option></select><select id="vscn" style="width:auto;margin:3px"><option value="3">3 مشاهد</option><option value="4" selected>4 مشاهد</option><option value="6">6 مشاهد</option></select><select id="vtheme" style="width:auto;margin:3px"><option value="green">🟢 أخضر</option><option value="blue">🔵 أزرق</option><option value="dark">⚫ داكن</option><option value="sun">🟠 ذهبي</option></select><select id="vrate" style="width:auto;margin:3px"><option value="0.8">صوت بطيء</option><option value="0.95" selected>صوت عادي</option><option value="1.15">صوت سريع</option></select>
@@ -360,12 +360,26 @@ const SA=[
 const $=id=>document.getElementById(id);
 const norm=s=>(s||'').replace(/[\u064B-\u0652\u0640]/g,'').replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/\s+/g,' ').trim().toLowerCase();
 /* tabs */
-document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#nav button').forEach(x=>x.classList.toggle('on',x==b));document.querySelectorAll('.tab').forEach(t=>t.style.display=t.id==b.dataset.t?'block':'none');window.scrollTo(0,0)});
+document.querySelectorAll('#nav button').forEach(b=>b.onclick=e=>{document.querySelectorAll('#nav button').forEach(x=>x.classList.toggle('on',x==b));document.querySelectorAll('.tab').forEach(t=>t.style.display=t.id==b.dataset.t?'block':'none');window.scrollTo(0,0);if(e&&e.isTrusted){try{pageAuto(b)}catch(x){}}});
 /* units */
 const US=[...document.querySelectorAll('.unit')];let cur=0;
 US.forEach((u,i)=>{const b=document.createElement('button');b.textContent=u.dataset.title;b.onclick=()=>show(i);$('toc').appendChild(b)});
-function show(i){cur=i;US.forEach((u,j)=>u.classList.toggle('on',i==j));[...$('toc').children].forEach((b,j)=>b.classList.toggle('on',i==j));$('aiout').style.display='none';$('units').scrollIntoView({behavior:'smooth'})}
-function go(d){show(Math.max(0,Math.min(US.length-1,cur+d)))}show(0);
+let UNIT_READY=false,AUTO_NAV=0,AUTOV=(()=>{try{return localStorage.getItem('odl_autovoice')!=='0'}catch(e){return true}})();
+/* ===== القراءة الصوتية التلقائية: عند الدخول وعند التنقل بين الوحدات والصفحات ===== */
+function autoWhenActive(fn){const ua=navigator.userActivation;if(!ua||ua.hasBeenActive){setTimeout(fn,300);return}
+  const ev=['pointerdown','keydown','touchstart'],h=()=>{ev.forEach(e=>removeEventListener(e,h,true));setTimeout(fn,150)};ev.forEach(e=>addEventListener(e,h,true))}
+function autoVoiceSet(v){AUTOV=!!v;try{localStorage.setItem('odl_autovoice',v?'1':'0')}catch(e){}if(!v){AUTO_NAV++;try{speechSynthesis.cancel()}catch(e){}try{wkVoiceStop()}catch(e){}}const c=$('autovoice');if(c)c.checked=AUTOV}
+function speakPlain(t){speechSynthesis.cancel();const my=SPK;fillVoices();const ch=spSegs(spPrep(t));let i=0;
+  const next=()=>{if(my!==SPK||i>=ch.length)return;const g=ch[i++];if(g.en&&!enVoice()){next();return}const u=mkUtt(g.t,false,g.en);let fin=false,tm;const go=()=>{if(fin)return;fin=true;clearTimeout(tm);if(my===SPK)next()};tm=setTimeout(go,Math.max(4000,g.t.length*140+2500));u.onend=go;u.onerror=go;speechSynthesis.speak(u)};next()}
+function unitAuto(){if(!UNIT_READY)return;AUTO_NAV++;const n=AUTO_NAV;try{wkVoiceStop()}catch(e){}try{speechSynthesis.cancel()}catch(e){}
+  if(AUTOV)autoWhenActive(()=>{if(n===AUTO_NAV)speak()})}
+function pageAuto(b){AUTO_NAV++;const n=AUTO_NAV;try{wkVoiceStop()}catch(e){}try{speechSynthesis.cancel()}catch(e){}
+  const t=b.dataset.t;if(!AUTOV||t==='trainer')return;
+  if(t==='explain'){autoWhenActive(()=>{if(n===AUTO_NAV)speak()});return}
+  const tab=document.getElementById(t),nt=tab&&tab.querySelector('.note'),txt=(b.textContent||'').trim()+'. '+(nt?nt.textContent.trim().slice(0,260):'');
+  autoWhenActive(()=>{if(n===AUTO_NAV)speakPlain(txt)})}
+function show(i){cur=i;US.forEach((u,j)=>u.classList.toggle('on',i==j));[...$('toc').children].forEach((b,j)=>b.classList.toggle('on',i==j));$('aiout').style.display='none';$('units').scrollIntoView({behavior:'smooth'});unitAuto()}
+function go(d){show(Math.max(0,Math.min(US.length-1,cur+d)))}show(0);UNIT_READY=true;{const c=$('autovoice');if(c)c.checked=AUTOV}
 const utext=()=>US[cur].innerText;
 /* audio */
 
@@ -1494,7 +1508,8 @@ function welLines(j){
   return L}
 function welShow(j){const box=$('wel_box');if(!box)return;const L=welLines(j);WEL_TXT=L.join(' ');WEL_THX=(j.thanks&&j.thanks.name)||'';
   box.innerHTML='<div style="max-width:1000px;margin:10px auto;padding:12px 16px;background:var(--card);color:var(--tx);border:2px solid var(--ok,#2e8b57);border-radius:12px;line-height:1.9"><b>🌿 '+esc(L[0])+'</b>'+L.slice(1).map(x=>'<div>'+esc(x)+'</div>').join('')
-   +'<div style="margin-top:8px"><button class="b s" onclick="wkSpeak(WEL_TXT,this,true)">🔊 استماع</button> <button class="b s" onclick="$(\'wel_box\').style.display=\'none\'">إغلاق ✖</button></div></div>';box.style.display='block'}
+   +'<div style="margin-top:8px"><button class="b s" id="wel_spk" onclick="wkSpeak(WEL_TXT,this,true)">🔊 استماع</button> <button class="b s" onclick="autoVoiceSet(false)">🔇 إيقاف القراءة التلقائية</button> <button class="b s" onclick="$(\'wel_box\').style.display=\'none\'">إغلاق ✖</button></div></div>';box.style.display='block';welAuto()}
+function welAuto(){if(!AUTOV)return;const n=AUTO_NAV;autoWhenActive(()=>{const b=$('wel_spk');if(n!==AUTO_NAV||!b||b.offsetParent===null||WKBTN===b)return;wkSpeak(WEL_TXT,b,true)})}
 /* أول دخول: من لم يُجرِ الاختبار القبلي (ولم يبدأ البعدي) تُفتح له نافذة الاختبار القبلي أولاً */
 function preLand(need){const n=$('pre_note');if(n)n.style.display=need?'block':'none';
   if(!need||PRE_LANDED)return;PRE_LANDED=true;try{$('phase').value='pre';tmNote()}catch(e){}mfGo('exam')}
