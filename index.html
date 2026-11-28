@@ -328,7 +328,7 @@ table.t{border-collapse:collapse;width:100%;font-size:.88rem}table.t th,table.t 
 
 <script>
 /* ===== إعداد: ضع رابط تطبيق Google Apps Script هنا ===== */
-const SHEET_URL='https://script.google.com/macros/s/AKfycbwHOkrT-bzMPq94e4JngADjq8j3xaUzEN3WLBqahS4ZSVNYULi2muzthW_DozdYWrhh/exec';/* ضع هنا رابط تطبيق الويب (Apps Script) الخاص بالخادم الجديد */
+const SHEET_URL='https://script.google.com/macros/s/AKfycbwFrz2CD6UieKVyWEE55oqvu0uUi78YiY42D1AFohauv5qp30TCs4XTAybqRvtL2DxM/exec';/* ضع هنا رابط تطبيق الويب (Apps Script) الخاص بالخادم الجديد */
 const claude={use:async()=>null};
 let TP='';
 async function api(q){if(q&&q.pin!==undefined){const r=await fetch(SHEET_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(q)});return r.json()}   /* رمز المدرب يُرسل بـ POST لا في الرابط */
