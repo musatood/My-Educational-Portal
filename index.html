@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com data:; img-src 'self' data: blob:; media-src 'self' data: blob:; connect-src https://script.google.com https://script.googleusercontent.com; object-src 'none'; base-uri 'none'; frame-src 'none'; worker-src 'none'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com data:; img-src 'self' data: blob:; media-src 'self' data: blob:; connect-src 'self' https://script.google.com https://script.googleusercontent.com; object-src 'none'; base-uri 'none'; frame-src 'self'; worker-src 'none'; form-action 'self'">
 <meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIj48Y2lyY2xlIGN4PSIxMDAiIGN5PSIxMDAiIHI9Ijk2IiBmaWxsPSIjMEYyQTQ3Ii8+PGNpcmNsZSBjeD0iMTAwIiBjeT0iMTAwIiByPSI4NCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjQzI4QTFFIiBzdHJva2Utd2lkdGg9IjQiLz48cGF0aCBkPSJNNTIgMTE4aDk2djhINTJ6TTYwIDg2bDQwLTIyIDQwIDIydjEwSDYweiIgZmlsbD0iI0MyOEExRSIvPjxyZWN0IHg9IjcyIiB5PSI5OCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjZmZmIi8+PHJlY3QgeD0iOTUiIHk9Ijk4IiB3aWR0aD0iMTAiIGhlaWdodD0iMjAiIGZpbGw9IiNmZmYiLz48cmVjdCB4PSIxMTgiIHk9Ijk4IiB3aWR0aD0iMTAiIGhlaWdodD0iMjAiIGZpbGw9IiNmZmYiLz48dGV4dCB4PSIxMDAiIHk9IjE1OCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXdlaWdodD0iNzAwIiBmb250LXNpemU9IjMwIiBmaWxsPSIjZmZmIj5PVVM8L3RleHQ+PC9zdmc+">
@@ -1613,7 +1613,7 @@ function boardOpen(i){const L=BOARD_LESSONS[i];if(!L)return;
  const h=document.getElementById('bd_frame');h.innerHTML='';const f=document.createElement('iframe');f.src=L.f;f.title=L.t;f.setAttribute('allow','autoplay; fullscreen');f.setAttribute('allowfullscreen','');
  f.style.cssText='width:100%;height:min(88vh,860px);border:0;border-radius:12px;margin-top:10px;background:#f6efdc';h.appendChild(f)}
 async function boardOpenUnit(){document.querySelector('#nav button[data-t="board"]').click();await boardScan();
- const i=BOARD_LESSONS.findIndex(l=>l.u===cur);if(i<0){alert('لا توجد سبورة لهذه الوحدة بعد. اختر من الدروس المتاحة في تبويب السبورة.');return}boardOpen(i)}
+ const i=BOARD_LESSONS.findIndex(l=>l.u===cur);if(i<0){alert(BOARD_LESSONS.length?'لا توجد سبورة لهذه الوحدة بعد. اختر من الدروس المتاحة في تبويب السبورة.':'تعذّر تحميل ملفات الدروس (lesson-01.html ...). تأكد أنها بجوار index.html ثم حدّث الصفحة.');return}boardOpen(i)}
 document.querySelector('#nav button[data-t="board"]').addEventListener('click',boardScan);
 try{if(location.protocol==='file:')document.getElementById('sims_file').style.display='block'}catch(e){}
 </script>
@@ -1811,7 +1811,15 @@ async function agRename(ph,btn){const old=btn.dataset.nm||'',nm=(prompt('اكت�
 setInterval(()=>{try{const p=document.getElementById('tpanel');if(p&&p.style.display!=='none'&&Date.now()-t>20*60*1000){TP='';p.style.display='none';document.getElementById('tlock').style.display='block';const i=document.getElementById('pin');if(i)i.value='';DASH=null;const r=document.getElementById('dash_rep');if(r)r.value=''}}catch(e){}},30000)})();
 let SCH=null;
 async function schedLoad(){const el=$('sch_st');if(!el)return;try{const j=await api({action:'trk_sched_get',pin:TP});if(!j.ok)throw new Error(j.err||'');SCH=j;schedPaint()}catch(e){SCH=null;el.textContent='🗓️ جدولة الإرسال: لم تُفعَّل في الخادم بعد (انظر التعليمات: سطر واحد يُضاف في Tracking.gs)'}}
-function schedPaint(){const j=SCH,el=$('sch_st');if(!j||!el)return;el.textContent=j.paused?'⏸️ الإرسال التلقائي موقوف مؤقتاً':'🗓️ الإرسال التلقائي: '+(+j.every===1?'كل يوم':+j.every===2?'كل يومين':'كل '+j.every+' أيام')+' الساعة '+j.hour+':00'+(j.last?' — آخر إرسال '+j.last:'')+(j.next?' — القادم '+j.next:'')}
+function schedFmt(iso){try{return new Date(iso).toLocaleString('ar-SD',{dateStyle:'short',timeStyle:'short'})}catch(e){return iso||''}}
+function schedPaint(){const j=SCH,el=$('sch_st');if(!j||!el)return;
+ let h=esc(j.paused?'⏸️ الإرسال التلقائي موقوف مؤقتاً':'🗓️ الإرسال التلقائي: '+(+j.every===1?'كل يوم':+j.every===2?'كل يومين':'كل '+j.every+' أيام')+' الساعة '+j.hour+':00'+(j.last?' — آخر إرسال '+j.last:'')+(j.next?' — القادم '+j.next:''));
+ const t=j.tick,s=j.send;
+ if(!t)h+='<br>🔎 آخر فحص للمشغّل: <b style="color:var(--no)">لا يوجد — المشغّل لم يعمل بعد (شغّل setupAllTriggers مرة واحدة في Apps Script)</b>';
+ else{const age=Date.now()-new Date(t.at).getTime(),stale=age>3*36e5;h+='<br>🔎 آخر فحص للمشغّل: '+esc(schedFmt(t.at))+(stale?' <b style="color:var(--no)">⚠️ متوقف منذ أكثر من 3 ساعات — راجع المشغّلات</b>':'')+(t.note?' — '+esc(t.note):'')}
+ if(!s)h+='<br>📨 آخر إرسال: لم تُنفَّذ مهمة إرسال بعد';
+ else{const bad=(+s.off||0)+(+s.failed||0)>0||s.error;h+='<br>📨 آخر إرسال: '+esc(schedFmt(s.at))+' — أُرسل '+(+s.sent||0)+'، رُفض '+(+s.off||0)+'، فشل '+(+s.failed||0)+' من '+(+s.total||0)+(s.why?' — سبب الرفض: '+esc(s.why):'')+(s.err?' — الخطأ: '+esc(s.err):'')+(s.error?' — تعطّلت المهمة: '+esc(s.error):'')+(!s.total&&!s.error?' — لا مستلمين (لا متأخرين ولا أرقام إدارة)':'');if(bad)h='<span style="color:var(--no)">'+h+'</span>'}
+ el.innerHTML=h}
 function schedToggle(){const b=$('sch_box');b.style.display=b.style.display==='none'?'block':'none';if(SCH){$('sch_every').value=SCH.every;$('sch_hour').value=SCH.hour;$('sch_pause').checked=!!SCH.paused}}
 async function schedSave(){const every=Math.round(+$('sch_every').value),hour=Math.round(+$('sch_hour').value),apin=$('sch_apin').value;
  if(!(every>=1&&every<=30)||!(hour>=0&&hour<=23)){alert('التكرار من 1 إلى 30 يوماً، والساعة من 0 إلى 23.');return}
